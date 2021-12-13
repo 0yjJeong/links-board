@@ -1,0 +1,12 @@
+# package directories
+/node_modules
+
+# environment variables files
+.env
+.env.development
+
+# dynamodb
+/.dynamodb
+
+# webpack
+.webpack

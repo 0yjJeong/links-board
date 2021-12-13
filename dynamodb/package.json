@@ -1,0 +1,24 @@
+{
+  "name": "db-service",
+  "private": true,
+  "scripts": {
+    "offline": "serverless offline start --httpPort 3001",
+    "deploy": "serverless deploy --stage production",
+    "remove": "serverless remove --stage production"
+  },
+  "dependencies": {
+    "short-uuid": "^4.2.0",
+    "url-metadata": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.85",
+    "@types/node": "^16.11.6",
+    "serverless": "^2.64.1",
+    "serverless-dotenv-plugin": "^3.10.0",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^8.2.0",
+    "serverless-webpack": "^5.5.5",
+    "ts-loader": "^9.2.6",
+    "webpack-node-externals": "^3.0.0"
+  }
+}

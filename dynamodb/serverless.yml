@@ -1,0 +1,101 @@
+service: db-service
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dynamodb-local
+
+package:
+  individually: true
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  currentRegion: us-east-1
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 5002
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+  webpack:
+    includeModules: true
+    packager: npm
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${self:custom.currentStage}
+  region: ${self:custom.currentRegion}
+  lambdaHashingVersion: 20201221
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+
+functions:
+  createBoard:
+    handler: src/endpoints/boardCreate.createBoard
+    events:
+      - http:
+          path: board
+          method: post
+          cors: true
+  deleteBoard:
+    handler: src/endpoints/boardDelete.deleteBoard
+    events:
+      - http:
+          path: board/{id}
+          method: delete
+          cors: true
+  readBoard:
+    handler: src/endpoints/boardRead.readBoard
+    events:
+      - http:
+          path: board/{id}
+          method: get
+          cors: true
+  updateBoard:
+    handler: src/endpoints/boardUpdate.updateBoard
+    events:
+      - http:
+          path: board/{id}
+          method: post
+          cors: true
+  scrap:
+    handler: src/endpoints/scrap.scrap
+    events:
+      - http:
+          path: board/{id}/scrap
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    productDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
