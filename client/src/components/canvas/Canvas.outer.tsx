@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
 export const CanvasOuter = styled.div`
-  height: 100%;
+  flex-grow: 1;
+  position: relative;
 `;

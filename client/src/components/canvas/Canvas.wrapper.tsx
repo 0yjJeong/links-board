@@ -10,12 +10,14 @@ interface CanvasWrapperProps {
   ComponentOuter?: React.FunctionComponent;
   ComponentInner?: React.FunctionComponent<CanvasInnerProps>;
   onDragEnd: OnDragEndResponder;
+  children: React.ReactElement;
 }
 
 export const CanvasWrapper = ({
   ComponentOuter = CanvasOuter,
   ComponentInner = CanvasInner,
   onDragEnd,
+  children,
 }: CanvasWrapperProps) => {
   return (
     <ComponentOuter>
@@ -25,7 +27,9 @@ export const CanvasWrapper = ({
             <ComponentInner
               ref={provided.innerRef}
               {...provided.droppableProps}
-            />
+            >
+              {children}
+            </ComponentInner>
           )}
         </Droppable>
       </DragDropContext>
