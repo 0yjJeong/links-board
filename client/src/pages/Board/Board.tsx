@@ -6,12 +6,16 @@ export const Board = () => {
 
   return (
     <Wrapper axis='column'>
-      <Header axis='column'></Header>
+      <Header axis='column' spacing='medium'>
+        Headre
+      </Header>
       <CanvasWrapper onDragEnd={onDragEnd} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled(StackDefault)``;
+const Wrapper = styled(StackDefault)`
+  background: ${(p) => p.theme.palette.grey[0]};
+`;
 
 const Header = styled(StackDefault)``;
