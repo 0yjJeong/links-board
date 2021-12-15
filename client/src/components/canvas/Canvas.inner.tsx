@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-export interface CanvasInnerProps {
-  ref: (element: HTMLElement | null) => any;
-}
-
-export const CanvasInner = styled.div<CanvasInnerProps>`
+export const CanvasInner = styled.div`
   display: flex;
   gap: 0.6rem;
   position: absolute;
@@ -14,4 +10,5 @@ export const CanvasInner = styled.div<CanvasInnerProps>`
   left: 0;
   right: 0;
   overflow-y: hidden;
+  padding-bottom: ${(p) => p.theme.spacing['large']}px;
 `;

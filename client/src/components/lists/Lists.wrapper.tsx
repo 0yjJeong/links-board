@@ -1,17 +1,23 @@
 import React from 'react';
-import { ListWrapper, ListWrapperProps } from '../';
+import { ListDefaultProps, ListInnerDefaultProps, CardWrapperProps } from '../';
 
 interface ListsWrapperProps {
-  ComponentList?: React.FunctionComponent<ListWrapperProps>;
+  List: React.FunctionComponent<ListDefaultProps>;
+  ListInner: React.FunctionComponent<ListInnerDefaultProps>;
+  Card: React.FunctionComponent<CardWrapperProps>;
 }
 
-export const ListsWrapper = ({
-  ComponentList = ListWrapper,
-}: ListsWrapperProps) => {
+export const ListsWrapper = ({ List, ListInner, Card }: ListsWrapperProps) => {
   return (
     <>
-      {['', '', ''].map((_, listIndex) => (
-        <ComponentList key={listIndex} />
+      {[{ id: '1' }, { id: '2' }, { id: '3' }].map((list, index) => (
+        <List
+          key={list.id}
+          id={list.id}
+          index={index}
+          ListInner={ListInner}
+          Card={Card}
+        />
       ))}
     </>
   );

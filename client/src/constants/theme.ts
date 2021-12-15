@@ -22,7 +22,7 @@ const theme = {
     },
   },
   radii: {
-    small: 2,
+    small: 5,
     normal: 30,
     large: 48,
   },

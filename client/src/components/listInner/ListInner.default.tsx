@@ -1,16 +1,32 @@
+import React from 'react';
+import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-import { StackDefault } from '..';
+import { CardWrapperProps, StackDefault } from '..';
 
-interface ListInnerDefaultProps {}
+export interface ListInnerDefaultProps {
+  id: string;
+  Card: React.FunctionComponent<CardWrapperProps>;
+}
 
-const Body = styled.div``;
+const Body = styled.div`
+  overflow-y: auto;
+`;
 
-export const ListInnerDefault = ({}: ListInnerDefaultProps) => {
+export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
   return (
     <>
-      <StackDefault></StackDefault>
-      <Body></Body>
-      <StackDefault></StackDefault>
+      <StackDefault spacing='normal'>{id}</StackDefault>
+      <Droppable droppableId={id} type='card'>
+        {(provided) => (
+          <Body ref={provided.innerRef} {...provided.droppableProps}>
+            {[{ id: '1' }, { id: '2' }, { id: '3' }].map((card, index) => (
+              <Card key={card.id} id={`${id}${card.id}`} index={index} />
+            ))}
+            {provided.placeholder}
+          </Body>
+        )}
+      </Droppable>
+      <StackDefault spacing='normal'>Footer</StackDefault>
     </>
   );
 };

@@ -4,11 +4,11 @@ import {
   Droppable,
   OnDragEndResponder,
 } from 'react-beautiful-dnd';
-import { CanvasInner, CanvasInnerProps, CanvasOuter } from '.';
+import { CanvasInner, CanvasOuter } from '.';
 
 interface CanvasWrapperProps {
   ComponentOuter?: React.FunctionComponent;
-  ComponentInner?: React.FunctionComponent<CanvasInnerProps>;
+  ComponentInner?: React.FunctionComponent;
   onDragEnd: OnDragEndResponder;
   children: React.ReactElement;
 }
@@ -20,19 +20,21 @@ export const CanvasWrapper = ({
   children,
 }: CanvasWrapperProps) => {
   return (
-    <ComponentOuter>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId='droppable-all' direction='horizontal'>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <ComponentOuter>
+        <Droppable
+          droppableId='droppable-all'
+          direction='horizontal'
+          type='list'
+        >
           {(provided) => (
-            <ComponentInner
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
+            <CanvasInner ref={provided.innerRef} {...provided.droppableProps}>
               {children}
-            </ComponentInner>
+              {provided.placeholder}
+            </CanvasInner>
           )}
         </Droppable>
-      </DragDropContext>
-    </ComponentOuter>
+      </ComponentOuter>
+    </DragDropContext>
   );
 };
