@@ -1,6 +1,11 @@
 const theme = {
   palette: {
-    grey: ['#F9F9F9', '#F3F3F3', '#EBEBEB', '#DDDDDD', '#A4A4A4', '#3E3E3E'],
+    grey0: '#F9F9F9',
+    grey1: '#F3F3F3',
+    grey2: '#EBEBEB',
+    grey3: '#DDDDDD',
+    grey4: '#A4A4A4',
+    grey5: '#3E3E3E',
   },
   spacing: {
     small: 4,
@@ -28,6 +33,7 @@ const theme = {
   },
 };
 
+export type Palette = typeof theme['palette'];
 export type Spacing = typeof theme['spacing'];
 export type Sizing = typeof theme['sizing'];
 export type Radii = typeof theme['radii'];

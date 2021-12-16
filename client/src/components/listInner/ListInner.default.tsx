@@ -1,7 +1,11 @@
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-import { CardWrapperProps, StackDefault } from '..';
+import {
+  CardWrapperProps,
+  InputWrapper as Input,
+  StackDefault as Stack,
+} from '..';
 
 export interface ListInnerDefaultProps {
   id: string;
@@ -10,12 +14,16 @@ export interface ListInnerDefaultProps {
 
 const Body = styled.div`
   overflow-y: auto;
+  padding-left: ${(p) => p.theme.spacing['normal']}px;
+  padding-right: ${(p) => p.theme.spacing['normal']}px;
 `;
 
 export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
   return (
     <>
-      <StackDefault spacing='normal'>{id}</StackDefault>
+      <Stack spacing='normal'>
+        <Input theme='subTitle' placeholder='List title' />
+      </Stack>
       <Droppable droppableId={id} type='card'>
         {(provided) => (
           <Body ref={provided.innerRef} {...provided.droppableProps}>
@@ -26,7 +34,7 @@ export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
           </Body>
         )}
       </Droppable>
-      <StackDefault spacing='normal'>Footer</StackDefault>
+      <Stack spacing='normal'></Stack>
     </>
   );
 };

@@ -6,6 +6,7 @@ import {
   ListDefault as List,
   ListInnerDefault as ListInner,
   CardWrapper as Card,
+  InputWrapper as Input,
 } from '../../components';
 
 export const Board = () => {
@@ -14,7 +15,7 @@ export const Board = () => {
   return (
     <Wrapper axis='column'>
       <Header axis='column' spacing='medium'>
-        Header
+        <Input theme='title1' placeholder='Links board' />
       </Header>
       <Canvas onDragEnd={onDragEnd}>
         <Lists List={List} ListInner={ListInner} Card={Card} />
@@ -24,7 +25,7 @@ export const Board = () => {
 };
 
 const Wrapper = styled(Stack)`
-  background: ${(p) => p.theme.palette.grey[0]};
+  background: ${(p) => p.theme.palette['grey0']};
   display: flex;
   flex-direction: column;
 `;

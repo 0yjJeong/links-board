@@ -12,10 +12,8 @@ export const ListDefaultInner = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
-  background: ${(p) => p.theme.palette.grey[2]};
+  background: ${(p) => p.theme.palette['grey2']};
   border-radius: ${(p) => p.theme.radii['small']}px;
-  padding-left: ${(p) => p.theme.spacing['normal']}px;
-  padding-right: ${(p) => p.theme.spacing['normal']}px;
 `;
 
 export interface ListDefaultProps {
