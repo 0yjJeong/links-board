@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { BiLink } from 'react-icons/bi';
+import { HiOutlineDocumentAdd } from 'react-icons/hi';
+import { MdDelete } from 'react-icons/md';
 import {
   StackDefault as Stack,
   CanvasWrapper as Canvas,
@@ -7,6 +10,8 @@ import {
   ListInnerDefault as ListInner,
   CardWrapper as Card,
   InputWrapper as Input,
+  ButtonOutlineWrapper as ButtonOutline,
+  ButtonFillWrapper as ButtonFill,
 } from '../../components';
 
 export const Board = () => {
@@ -15,7 +20,27 @@ export const Board = () => {
   return (
     <Wrapper axis='column'>
       <Header axis='column' spacing='medium'>
-        <Input theme='title1' placeholder='Links board' />
+        <Stack justify='space-between'>
+          <Stack>
+            <ButtonOutline>
+              <BiLink />
+              code
+            </ButtonOutline>
+          </Stack>
+          <Stack>
+            <ButtonFill>
+              <HiOutlineDocumentAdd />
+              New
+            </ButtonFill>
+            <ButtonFill>
+              <MdDelete />
+              Delete
+            </ButtonFill>
+          </Stack>
+        </Stack>
+        <Stack>
+          <Input theme='title1' placeholder='Links board' />
+        </Stack>
       </Header>
       <Canvas onDragEnd={onDragEnd}>
         <Lists List={List} ListInner={ListInner} Card={Card} />
@@ -31,5 +56,5 @@ const Wrapper = styled(Stack)`
 `;
 
 const Header = styled(Stack)`
-  height: 6.4rem;
+  height: 3.4rem;
 `;

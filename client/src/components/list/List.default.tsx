@@ -12,7 +12,7 @@ export const ListDefaultInner = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
-  background: ${(p) => p.theme.palette['grey2']};
+  background: ${(p) => p.theme.palette['grey1']};
   border-radius: ${(p) => p.theme.radii['small']}px;
 `;
 

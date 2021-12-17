@@ -1,7 +1,11 @@
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { HiMinus } from 'react-icons/hi';
+import { IoMdAdd } from 'react-icons/io';
 import {
+  ButtonStretchWrapper as ButtonStretch,
+  ButtonFillWrapper as ButtonFill,
   CardWrapperProps,
   InputWrapper as Input,
   StackDefault as Stack,
@@ -23,6 +27,9 @@ export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
     <>
       <Stack spacing='normal'>
         <Input theme='subTitle' placeholder='List title' />
+        <ButtonFill>
+          <HiMinus />
+        </ButtonFill>
       </Stack>
       <Droppable droppableId={id} type='card'>
         {(provided) => (
@@ -34,7 +41,12 @@ export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
           </Body>
         )}
       </Droppable>
-      <Stack spacing='normal'></Stack>
+      <Stack spacing='normal'>
+        <ButtonStretch>
+          <IoMdAdd />
+          <span> Add a link</span>
+        </ButtonStretch>
+      </Stack>
     </>
   );
 };

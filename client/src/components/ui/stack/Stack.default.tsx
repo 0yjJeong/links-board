@@ -10,7 +10,7 @@ interface StackDefaultProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const StackBase = styled.div<StackDefaultProps>`
-  height: inherit;
+  height: 100%;
   display: flex;
   flex-direction: ${(p) => p.axis};
   justify-content: ${(p) => p.justify};
