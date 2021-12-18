@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
-import { ListInnerDefaultProps, CardWrapperProps } from '../';
+import { ListInnerDefault } from '..';
 
 export const ListDefaultOuter = styled.div`
   width: 340px;
@@ -19,18 +18,9 @@ export const ListDefaultInner = styled.div`
 export interface ListDefaultProps {
   id: string;
   index: number;
-  ListInner: React.FunctionComponent<ListInnerDefaultProps>;
-  Card: React.FunctionComponent<CardWrapperProps>;
 }
 
-export const ListDefault = ({
-  id,
-  index,
-  ListInner,
-  Card,
-}: ListDefaultProps) => {
-  const children = <ListInner id={id} Card={Card} />;
-
+export const ListDefault = ({ id, index }: ListDefaultProps) => {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -39,7 +29,9 @@ export const ListDefault = ({
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          <ListDefaultInner>{children}</ListDefaultInner>
+          <ListDefaultInner>
+            <ListInnerDefault id={id} />
+          </ListDefaultInner>
         </ListDefaultOuter>
       )}
     </Draggable>

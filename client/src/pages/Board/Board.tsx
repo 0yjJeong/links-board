@@ -7,7 +7,6 @@ import {
   CanvasWrapper as Canvas,
   ListsWrapper as Lists,
   ListDefault as List,
-  ListInnerDefault as ListInner,
   CardWrapper as Card,
   InputWrapper as Input,
   ButtonOutlineWrapper as ButtonOutline,
@@ -43,7 +42,7 @@ export const Board = () => {
         </Stack>
       </Header>
       <Canvas onDragEnd={onDragEnd}>
-        <Lists List={List} ListInner={ListInner} Card={Card} />
+        <Lists List={List} Card={Card} />
       </Canvas>
     </Wrapper>
   );

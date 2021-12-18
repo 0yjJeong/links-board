@@ -1,4 +1,3 @@
-import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
@@ -6,14 +5,13 @@ import { IoMdAdd } from 'react-icons/io';
 import {
   ButtonStretchWrapper as ButtonStretch,
   ButtonFillWrapper as ButtonFill,
-  CardWrapperProps,
   InputWrapper as Input,
   StackDefault as Stack,
+  CardWrapper as Card,
 } from '..';
 
 export interface ListInnerDefaultProps {
   id: string;
-  Card: React.FunctionComponent<CardWrapperProps>;
 }
 
 const Body = styled.div`
@@ -22,7 +20,7 @@ const Body = styled.div`
   padding-right: ${(p) => p.theme.spacing['normal']}px;
 `;
 
-export const ListInnerDefault = ({ id, Card }: ListInnerDefaultProps) => {
+export const ListInnerDefault = ({ id }: ListInnerDefaultProps) => {
   return (
     <>
       <Stack spacing='normal'>

@@ -17,8 +17,6 @@ export interface ButtonDefaultProps
 export const ButtonDefault = styled.button<ButtonDefaultProps>`
   border: none;
   cursor: pointer;
-  margin-top: auto;
-  margin-bottom: auto;
   display: flex;
   align-items: center;
   gap: ${(p) => p.theme.spacing['small']}px;
