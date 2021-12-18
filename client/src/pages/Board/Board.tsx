@@ -27,7 +27,7 @@ export const Board = () => {
               code
             </ButtonOutline>
           </Stack>
-          <Stack>
+          <Stack gap='small'>
             <ButtonFill>
               <HiOutlineDocumentAdd />
               New
