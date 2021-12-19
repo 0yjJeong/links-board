@@ -1,4 +1,4 @@
-import { InputDefault, InputCSS, InputProps } from '..';
+import { InputDefault, InputCSS, InputProps } from './Input.default';
 
 type InputThemeMap = {
   [key in 'title1' | 'subTitle']: InputCSS;

@@ -3,14 +3,11 @@ import { BiLink } from 'react-icons/bi';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
 import {
-  StackDefault as Stack,
   CanvasWrapper as Canvas,
-  ListsWrapper as Lists,
   ListDefault as List,
+  ListInnerDefault as ListInner,
   CardWrapper as Card,
-  InputWrapper as Input,
-  ButtonOutlineWrapper as ButtonOutline,
-  ButtonFillWrapper as ButtonFill,
+  UI,
 } from '../../components';
 
 export const Board = () => {
@@ -19,41 +16,47 @@ export const Board = () => {
   return (
     <Wrapper axis='column'>
       <Header axis='column' spacing='medium'>
-        <Stack justify='space-between'>
-          <Stack>
-            <ButtonOutline>
+        <UI.Stack justify='space-between'>
+          <UI.Stack>
+            <UI.Buttons.Outline>
               <BiLink />
               code
-            </ButtonOutline>
-          </Stack>
-          <Stack gap='small'>
-            <ButtonFill>
+            </UI.Buttons.Outline>
+          </UI.Stack>
+          <UI.Stack gap='small'>
+            <UI.Buttons.Fill>
               <HiOutlineDocumentAdd />
               New
-            </ButtonFill>
-            <ButtonFill>
+            </UI.Buttons.Fill>
+            <UI.Buttons.Fill>
               <MdDelete />
               Delete
-            </ButtonFill>
-          </Stack>
-        </Stack>
-        <Stack>
-          <Input theme='title1' placeholder='Links board' />
-        </Stack>
+            </UI.Buttons.Fill>
+          </UI.Stack>
+        </UI.Stack>
+        <UI.Stack>
+          <UI.Input theme='title1' placeholder='Links board' />
+        </UI.Stack>
       </Header>
-      <Canvas onDragEnd={onDragEnd}>
-        <Lists List={List} Card={Card} />
+      <Canvas UI={UI} onDragEnd={onDragEnd}>
+        <>
+          {[{ id: '1' }, { id: '2' }, { id: '3' }].map((list, index) => (
+            <List key={list.id} id={list.id} index={index}>
+              <ListInner id={list.id} UI={UI} Card={Card} />
+            </List>
+          ))}
+        </>
       </Canvas>
     </Wrapper>
   );
 };
 
-const Wrapper = styled(Stack)`
+const Wrapper = styled(UI.Stack)`
   background: ${(p) => p.theme.palette['grey0']};
   display: flex;
   flex-direction: column;
 `;
 
-const Header = styled(Stack)`
+const Header = styled(UI.Stack)`
   height: 3.4rem;
 `;

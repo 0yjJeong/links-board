@@ -1,17 +1,14 @@
+import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
-import {
-  ButtonStretchWrapper as ButtonStretch,
-  ButtonFillWrapper as ButtonFill,
-  InputWrapper as Input,
-  StackDefault as Stack,
-  CardWrapper as Card,
-} from '..';
+import { CardWrapperProps, IUI } from '..';
 
 export interface ListInnerDefaultProps {
   id: string;
+  UI: IUI;
+  Card: React.FunctionComponent<CardWrapperProps>;
 }
 
 const Body = styled.div`
@@ -20,15 +17,15 @@ const Body = styled.div`
   padding-right: ${(p) => p.theme.spacing['normal']}px;
 `;
 
-export const ListInnerDefault = ({ id }: ListInnerDefaultProps) => {
+export const ListInnerDefault = ({ id, Card, UI }: ListInnerDefaultProps) => {
   return (
     <>
-      <Stack spacing='normal'>
-        <Input theme='subTitle' placeholder='List title' />
-        <ButtonFill>
+      <UI.Stack spacing='normal'>
+        <UI.Input theme='subTitle' placeholder='List title' />
+        <UI.Buttons.Fill>
           <HiMinus />
-        </ButtonFill>
-      </Stack>
+        </UI.Buttons.Fill>
+      </UI.Stack>
       <Droppable droppableId={id} type='card'>
         {(provided) => (
           <Body ref={provided.innerRef} {...provided.droppableProps}>
@@ -39,12 +36,12 @@ export const ListInnerDefault = ({ id }: ListInnerDefaultProps) => {
           </Body>
         )}
       </Droppable>
-      <Stack spacing='normal'>
-        <ButtonStretch>
+      <UI.Stack spacing='normal'>
+        <UI.Buttons.Stretch>
           <IoMdAdd />
           <span> Add a link</span>
-        </ButtonStretch>
-      </Stack>
+        </UI.Buttons.Stretch>
+      </UI.Stack>
     </>
   );
 };

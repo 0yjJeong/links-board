@@ -1,6 +1,6 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
-import { ListInnerDefault } from '..';
 
 export const ListDefaultOuter = styled.div`
   width: 340px;
@@ -18,9 +18,10 @@ export const ListDefaultInner = styled.div`
 export interface ListDefaultProps {
   id: string;
   index: number;
+  children: React.ReactElement;
 }
 
-export const ListDefault = ({ id, index }: ListDefaultProps) => {
+export const ListDefault = ({ id, index, children }: ListDefaultProps) => {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -29,9 +30,7 @@ export const ListDefault = ({ id, index }: ListDefaultProps) => {
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          <ListDefaultInner>
-            <ListInnerDefault id={id} />
-          </ListDefaultInner>
+          <ListDefaultInner>{children}</ListDefaultInner>
         </ListDefaultOuter>
       )}
     </Draggable>
