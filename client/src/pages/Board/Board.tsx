@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { BiLink } from 'react-icons/bi';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import {
   CanvasWrapper as Canvas,
   ListDefault as List,
@@ -11,6 +13,8 @@ import {
 } from '../../components';
 
 export const Board = () => {
+  const title = useSelector((state: RootState) => state.board.title);
+
   const onDragEnd = () => {};
 
   return (
@@ -35,7 +39,7 @@ export const Board = () => {
           </UI.Stack>
         </UI.Stack>
         <UI.Stack>
-          <UI.Input theme='title1' placeholder='Links board' />
+          <UI.Input theme='title1' placeholder='Links board' value={title} />
         </UI.Stack>
       </Header>
       <Canvas UI={UI} onDragEnd={onDragEnd}>
