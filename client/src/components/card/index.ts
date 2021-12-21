@@ -1,2 +1,2 @@
+export { default as Card } from './Card.wrapper';
 export * from './Card.default';
-export * from './Card.wrapper';

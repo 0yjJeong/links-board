@@ -1,1 +1,1 @@
-export * from './ListInner.default';
+export { default as ListInner } from './ListInner.default';

@@ -14,7 +14,7 @@ export interface ButtonDefaultProps
   buttonStyle?: ButtonStyle;
 }
 
-export const ButtonDefault = styled.button<ButtonDefaultProps>`
+const ButtonDefault = styled.button<ButtonDefaultProps>`
   border: none;
   cursor: pointer;
   display: flex;
@@ -35,3 +35,5 @@ export const ButtonDefault = styled.button<ButtonDefaultProps>`
     background: ${(p) => p.theme.palette[p.buttonStyle!.hoverd]};
   }
 `;
+
+export default ButtonDefault;

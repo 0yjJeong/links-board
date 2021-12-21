@@ -1,11 +1,11 @@
 import styled from 'styled-components';
-import { ButtonDefault, ButtonDefaultProps } from '.';
+import ButtonDefault, { ButtonDefaultProps } from './Button.default';
 
 const ButtonStretchDefault = styled(ButtonDefault)`
   width: 100%;
 `;
 
-export const ButtonStretchWrapper = ({
+const ButtonStretch = ({
   buttonStyle = {
     color: 'grey4',
     size: 'title1',
@@ -17,3 +17,5 @@ export const ButtonStretchWrapper = ({
 }: ButtonDefaultProps) => {
   return <ButtonStretchDefault {...rest} buttonStyle={buttonStyle} />;
 };
+
+export default ButtonStretch;

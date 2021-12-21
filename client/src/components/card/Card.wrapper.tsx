@@ -6,7 +6,7 @@ export interface CardWrapperProps {
   index: number;
 }
 
-export const CardWrapper = ({ id, index }: CardWrapperProps) => {
+const CardWrapper = ({ id, index }: CardWrapperProps) => {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -21,3 +21,5 @@ export const CardWrapper = ({ id, index }: CardWrapperProps) => {
     </Draggable>
   );
 };
+
+export default CardWrapper;

@@ -1,6 +1,6 @@
-import { ButtonDefault, ButtonDefaultProps } from '.';
+import ButtonDefault, { ButtonDefaultProps } from './Button.default';
 
-export const ButtonFillWrapper = ({
+const ButtonFill = ({
   buttonStyle = {
     color: 'grey4',
     size: 'subtitle',
@@ -12,3 +12,5 @@ export const ButtonFillWrapper = ({
 }: ButtonDefaultProps) => {
   return <ButtonDefault {...rest} buttonStyle={buttonStyle} />;
 };
+
+export default ButtonFill;

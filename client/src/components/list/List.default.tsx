@@ -21,7 +21,7 @@ export interface ListDefaultProps {
   children: React.ReactElement;
 }
 
-export const ListDefault = ({ id, index, children }: ListDefaultProps) => {
+const ListDefault = ({ id, index, children }: ListDefaultProps) => {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -36,3 +36,5 @@ export const ListDefault = ({ id, index, children }: ListDefaultProps) => {
     </Draggable>
   );
 };
+
+export default ListDefault;

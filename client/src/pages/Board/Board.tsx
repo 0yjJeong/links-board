@@ -5,11 +5,13 @@ import { MdDelete } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import {
-  CanvasWrapper as Canvas,
-  ListDefault as List,
-  ListInnerDefault as ListInner,
-  CardWrapper as Card,
-  UI,
+  Canvas,
+  List,
+  ListInner,
+  Stack,
+  Input,
+  ButtonFill,
+  ButtonOutline,
 } from '../../components';
 
 export const Board = () => {
@@ -20,33 +22,33 @@ export const Board = () => {
   return (
     <Wrapper axis='column'>
       <Header axis='column' spacing='medium'>
-        <UI.Stack justify='space-between'>
-          <UI.Stack>
-            <UI.Buttons.Outline>
+        <Stack justify='space-between'>
+          <Stack>
+            <ButtonOutline>
               <BiLink />
               code
-            </UI.Buttons.Outline>
-          </UI.Stack>
-          <UI.Stack gap='small'>
-            <UI.Buttons.Fill>
+            </ButtonOutline>
+          </Stack>
+          <Stack gap='small'>
+            <ButtonFill>
               <HiOutlineDocumentAdd />
               New
-            </UI.Buttons.Fill>
-            <UI.Buttons.Fill>
+            </ButtonFill>
+            <ButtonFill>
               <MdDelete />
               Delete
-            </UI.Buttons.Fill>
-          </UI.Stack>
-        </UI.Stack>
-        <UI.Stack>
-          <UI.Input theme='title1' placeholder='Links board' value={title} />
-        </UI.Stack>
+            </ButtonFill>
+          </Stack>
+        </Stack>
+        <Stack>
+          <Input theme='title1' placeholder='Links board' value={title} />
+        </Stack>
       </Header>
-      <Canvas UI={UI} onDragEnd={onDragEnd}>
+      <Canvas onDragEnd={onDragEnd}>
         <>
           {[{ id: '1' }, { id: '2' }, { id: '3' }].map((list, index) => (
             <List key={list.id} id={list.id} index={index}>
-              <ListInner id={list.id} UI={UI} Card={Card} />
+              <ListInner id={list.id} />
             </List>
           ))}
         </>
@@ -55,12 +57,12 @@ export const Board = () => {
   );
 };
 
-const Wrapper = styled(UI.Stack)`
+const Wrapper = styled(Stack)`
   background: ${(p) => p.theme.palette['grey0']};
   display: flex;
   flex-direction: column;
 `;
 
-const Header = styled(UI.Stack)`
+const Header = styled(Stack)`
   height: 3.4rem;
 `;

@@ -1,1 +1,1 @@
-export * from './Stack.default';
+export { default as Stack } from './Stack.default';

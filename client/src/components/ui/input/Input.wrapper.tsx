@@ -22,6 +22,8 @@ interface InputWrapperProps extends InputProps {
   theme: keyof InputThemeMap;
 }
 
-export const InputWrapper = ({ theme, ...rest }: InputWrapperProps) => {
+const InputWrapper = ({ theme, ...rest }: InputWrapperProps) => {
   return <InputDefault {...rest} css={inputThemeMap[theme]} />;
 };
+
+export default InputWrapper;

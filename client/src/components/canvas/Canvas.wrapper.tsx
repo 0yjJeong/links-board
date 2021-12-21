@@ -5,18 +5,16 @@ import {
   Droppable,
   OnDragEndResponder,
 } from 'react-beautiful-dnd';
-import { CanvasInner, CanvasOuter, IUI } from '..';
+import { CanvasInner, CanvasOuter, Stack, ButtonStretch } from '..';
 
 interface CanvasWrapperProps {
-  UI: IUI;
   ComponentOuter?: React.FunctionComponent;
   ComponentInner?: React.FunctionComponent;
   onDragEnd: OnDragEndResponder;
   children: React.ReactElement;
 }
 
-export const CanvasWrapper = ({
-  UI,
+const CanvasWrapper = ({
   ComponentOuter = CanvasOuter,
   ComponentInner = CanvasInner,
   onDragEnd,
@@ -32,24 +30,26 @@ export const CanvasWrapper = ({
             type='list'
           >
             {(provided) => (
-              <UI.Stack
+              <Stack
                 gap='normal'
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
                 {children}
                 {provided.placeholder}
-              </UI.Stack>
+              </Stack>
             )}
           </Droppable>
-          <UI.Stack align='start'>
-            <UI.Buttons.Stretch>
+          <Stack align='start'>
+            <ButtonStretch>
               <IoMdAdd />
               Add list
-            </UI.Buttons.Stretch>
-          </UI.Stack>
+            </ButtonStretch>
+          </Stack>
         </ComponentInner>
       </ComponentOuter>
     </DragDropContext>
   );
 };
+
+export default CanvasWrapper;

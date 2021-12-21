@@ -10,7 +10,7 @@ interface StackDefaultProps extends HTMLAttributes<HTMLDivElement> {
   spacing?: keyof Spacing;
 }
 
-export const StackDefault = styled.div<StackDefaultProps>`
+const StackDefault = styled.div<StackDefaultProps>`
   height: 100%;
   display: flex;
   flex-direction: ${(p) => p.axis};
@@ -19,3 +19,5 @@ export const StackDefault = styled.div<StackDefaultProps>`
   gap: ${(p) => p.gap && p.theme.spacing[p.gap]}px;
   padding: ${(p) => p.spacing && p.theme.spacing[p.spacing]}px;
 `;
+
+export default StackDefault;
