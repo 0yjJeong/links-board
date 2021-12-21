@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { Board } from '../';
+import { Board, BoardPageDefaultProps, BoardPageWrapper } from '..';
 import { readBoard } from '../../lib/api';
 
-export const BoardSaved = () => {
+const SavedBoard = ({ setBoard, ...rest }: BoardPageDefaultProps) => {
   const { code } = useParams();
-  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
 
@@ -14,13 +12,21 @@ export const BoardSaved = () => {
     const init = async () => {
       if (code) {
         const res = await readBoard(code);
+        setBoard(res.Item);
         setLoading(false);
       }
     };
     init();
-  }, [code, dispatch]);
+  }, [code, setBoard]);
 
   if (loading) return null;
 
-  return <Board />;
+  const props = {
+    setBoard,
+    ...rest,
+  };
+
+  return <Board {...props} />;
 };
+
+export const SavedBoardPage = () => <BoardPageWrapper Component={SavedBoard} />;

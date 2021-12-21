@@ -1,25 +1,39 @@
 import React from 'react';
 import { IoMdAdd } from 'react-icons/io';
-import {
-  DragDropContext,
-  Droppable,
-  OnDragEndResponder,
-} from 'react-beautiful-dnd';
-import { CanvasInner, CanvasOuter, Stack, ButtonStretch } from '..';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { CanvasInner, CanvasOuter, Stack, ButtonStretch } from '../..';
+import { Dragged, Element } from '../../../types';
 
 interface CanvasWrapperProps {
   ComponentOuter?: React.FunctionComponent;
   ComponentInner?: React.FunctionComponent;
-  onDragEnd: OnDragEndResponder;
+  dragHappened: (payload: Dragged) => void;
+  addElement: (element: Element) => void;
   children: React.ReactElement;
 }
 
 const CanvasWrapper = ({
   ComponentOuter = CanvasOuter,
   ComponentInner = CanvasInner,
-  onDragEnd,
+  dragHappened,
+  addElement,
   children,
 }: CanvasWrapperProps) => {
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+
+    dragHappened({
+      elementId: result.draggableId,
+      startId: result.source.droppableId,
+      startIndex: result.source.index,
+      endId: result.destination?.droppableId,
+      endIndex: result.destination?.index,
+      type: result.type,
+    });
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <ComponentOuter>
@@ -41,7 +55,11 @@ const CanvasWrapper = ({
             )}
           </Droppable>
           <Stack align='start'>
-            <ButtonStretch>
+            <ButtonStretch
+              onClick={() => {
+                addElement({ id: 'list-4', title: '' });
+              }}
+            >
               <IoMdAdd />
               Add list
             </ButtonStretch>

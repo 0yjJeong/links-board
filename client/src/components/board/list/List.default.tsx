@@ -1,6 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
+import { ListInner } from '..';
+import { Card, Element, List, TitleProps } from '../../../types';
 
 export const ListDefaultOuter = styled.div`
   width: 340px;
@@ -16,14 +17,32 @@ export const ListDefaultInner = styled.div`
 `;
 
 export interface ListDefaultProps {
-  id: string;
   index: number;
-  children: React.ReactElement;
+  list: List;
+  cards: Card[] | undefined;
+  editTitle: (payload: TitleProps) => void;
+  deleteElement: (payload: Element) => void;
 }
 
-const ListDefault = ({ id, index, children }: ListDefaultProps) => {
+const ListDefault = ({
+  index,
+  list,
+  cards,
+  editTitle,
+  deleteElement,
+}: ListDefaultProps) => {
+  const children = (
+    <ListInner
+      index={index}
+      list={list}
+      cards={cards}
+      editTitle={editTitle}
+      deleteElement={deleteElement}
+    />
+  );
+
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={list.id} index={index}>
       {(provided) => (
         <ListDefaultOuter
           ref={provided.innerRef}
