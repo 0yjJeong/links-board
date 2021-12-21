@@ -61,7 +61,7 @@ const CanvasWrapper = ({
               }}
             >
               <IoMdAdd />
-              Add list
+              ADD LIST
             </ButtonStretch>
           </Stack>
         </ComponentInner>

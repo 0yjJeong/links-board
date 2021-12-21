@@ -42,8 +42,8 @@ export const Board = ({
   }, {} as { [key: string]: Card[] });
 
   return (
-    <BoardPageDefault axis='column'>
-      <Header axis='column' spacing='medium'>
+    <BoardPageDefault axis='column' gap='medium'>
+      <Header axis='column' spacing='medium' gap='small'>
         <Stack justify='space-between'>
           <Stack>
             <ButtonOutline>

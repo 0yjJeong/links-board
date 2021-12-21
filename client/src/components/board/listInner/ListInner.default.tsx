@@ -50,7 +50,7 @@ const ListInnerDefault = ({
       <Stack spacing='normal'>
         <ButtonStretch>
           <IoMdAdd />
-          <span> Add a link</span>
+          <span>ADD CARD</span>
         </ButtonStretch>
       </Stack>
     </>
