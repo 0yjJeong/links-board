@@ -16,11 +16,11 @@ const readBoardHandler = async (event) => {
       };
       const data = await dynamoClient.get(params).promise();
       data.Item.elements = await Promise.all(
-        data.Item.elements.map(async (card) => {
-          if (card.url) {
-            const result: urlMetadata.Result = await urlMetadata(card.url);
+        data.Item.elements.map(async (element) => {
+          if (element.url) {
+            const result: urlMetadata.Result = await urlMetadata(element.url);
             return {
-              ...card,
+              ...element,
               data: {
                 image: result.image,
                 title: result.title,
@@ -28,7 +28,7 @@ const readBoardHandler = async (event) => {
               },
             };
           }
-          return card;
+          return element;
         })
       );
       const response = {

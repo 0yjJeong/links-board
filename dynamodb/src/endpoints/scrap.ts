@@ -1,5 +1,4 @@
 import urlMetadata from 'url-metadata';
-import short from 'short-uuid';
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import dynamoClient from '../common/dynamoClient';
 import lambda from '../common/lambda';
@@ -20,12 +19,7 @@ const scrapHandler = async (event) => {
         UpdateExpression: `set elements = list_append(if_not_exists(elements, :empty_list), :card)`,
         ExpressionAttributeValues: {
           ':empty_list': [],
-          ':card': [
-            {
-              id: short().new(),
-              ...body.data,
-            },
-          ],
+          ':card': [body.data],
         },
         ReturnValues: 'UPDATED_NEW',
       };

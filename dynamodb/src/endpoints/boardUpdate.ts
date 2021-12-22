@@ -17,6 +17,15 @@ const updateBoardHandler = async (event) => {
               ':title': body.title,
             },
           }
+        : body.element
+        ? {
+            UpdateExpression:
+              'set elements = list_append(if_not_exists(elements, :empty_list), :element)',
+            ExpressionAttributeValues: {
+              ':empty_list': [],
+              ':element': [body.element],
+            },
+          }
         : {
             UpdateExpression: 'set elements = :elements',
             ExpressionAttributeValues: {
@@ -36,7 +45,10 @@ const updateBoardHandler = async (event) => {
         body: JSON.stringify(data),
         statusCode: 200,
       };
-      return { response, error: null };
+      return {
+        response,
+        error: null,
+      };
     } catch (error) {
       const response = {
         body: JSON.stringify(error),

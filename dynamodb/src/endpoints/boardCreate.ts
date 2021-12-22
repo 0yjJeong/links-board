@@ -1,4 +1,3 @@
-import short from 'short-uuid';
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import dynamoClient from '../common/dynamoClient';
 import lambda from '../common/lambda';
@@ -10,12 +9,8 @@ const createBoardHandler = async (event) => {
 
   if (body) {
     try {
-      const id = short().new();
       const params: DocumentClient.PutItemInput = {
-        Item: {
-          id,
-          ...body,
-        },
+        Item: body,
         TableName,
       };
 

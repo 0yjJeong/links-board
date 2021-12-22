@@ -7,7 +7,6 @@
     "remove": "serverless remove --stage production"
   },
   "dependencies": {
-    "short-uuid": "^4.2.0",
     "url-metadata": "^2.5.0"
   },
   "devDependencies": {
