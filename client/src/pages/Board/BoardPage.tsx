@@ -2,14 +2,7 @@ import styled from 'styled-components';
 import { BiLink } from 'react-icons/bi';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
-import {
-  Canvas,
-  List,
-  Stack,
-  Input,
-  ButtonFill,
-  ButtonOutline,
-} from '../../components';
+import { Canvas, List, Stack, Input, Button } from '../../components';
 import { BoardPageDefaultProps, BoardPageWrapper } from '.';
 import { Card } from '../../types';
 
@@ -46,20 +39,20 @@ export const Board = ({
       <Header axis='column' spacing='medium' gap='small'>
         <Stack justify='space-between'>
           <Stack>
-            <ButtonOutline>
+            <Button themeName='outline'>
               <BiLink />
               code
-            </ButtonOutline>
+            </Button>
           </Stack>
           <Stack gap='small'>
-            <ButtonFill>
+            <Button themeName='fill'>
               <HiOutlineDocumentAdd />
               New
-            </ButtonFill>
-            <ButtonFill>
+            </Button>
+            <Button themeName='fill'>
               <MdDelete />
               Delete
-            </ButtonFill>
+            </Button>
           </Stack>
         </Stack>
         <Stack>
@@ -81,6 +74,7 @@ export const Board = ({
               cards={groupedCardsMap[list.id]}
               editTitle={editTitle}
               deleteElement={deleteElement}
+              addElement={addElement}
             />
           ))}
         </>

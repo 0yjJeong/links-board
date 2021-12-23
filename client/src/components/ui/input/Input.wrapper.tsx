@@ -1,3 +1,4 @@
+import React from 'react';
 import { InputDefault, InputCSS, InputProps } from './Input.default';
 
 type InputThemeMap = {
@@ -22,8 +23,13 @@ interface InputWrapperProps extends InputProps {
   theme: keyof InputThemeMap;
 }
 
-const InputWrapper = ({ theme, ...rest }: InputWrapperProps) => {
-  return <InputDefault {...rest} css={inputThemeMap[theme]} />;
-};
+const InputWrapper = React.forwardRef(
+  (
+    { theme, ...rest }: InputWrapperProps,
+    ref: React.ForwardedRef<HTMLInputElement>
+  ) => {
+    return <InputDefault {...rest} css={inputThemeMap[theme]} ref={ref} />;
+  }
+);
 
 export default InputWrapper;

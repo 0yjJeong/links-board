@@ -22,6 +22,7 @@ export interface ListDefaultProps {
   cards: Card[] | undefined;
   editTitle: (payload: TitleProps) => void;
   deleteElement: (payload: Element) => void;
+  addElement: (payload: Element) => void;
 }
 
 const ListDefault = ({
@@ -30,6 +31,7 @@ const ListDefault = ({
   cards,
   editTitle,
   deleteElement,
+  addElement,
 }: ListDefaultProps) => {
   const children = (
     <ListInner
@@ -38,18 +40,20 @@ const ListDefault = ({
       cards={cards}
       editTitle={editTitle}
       deleteElement={deleteElement}
+      addElement={addElement}
     />
   );
 
   return (
     <Draggable draggableId={list.id} index={index}>
       {(provided) => (
-        <ListDefaultOuter
-          ref={provided.innerRef}
-          {...provided.dragHandleProps}
-          {...provided.draggableProps}
-        >
-          <ListDefaultInner>{children}</ListDefaultInner>
+        <ListDefaultOuter ref={provided.innerRef}>
+          <ListDefaultInner
+            {...provided.dragHandleProps}
+            {...provided.draggableProps}
+          >
+            {children}
+          </ListDefaultInner>
         </ListDefaultOuter>
       )}
     </Draggable>

@@ -20,7 +20,6 @@ export const InputDefault = styled.input<InputDefaultProps>`
   width: 100%;
   background: inherit;
   outline: none;
-  padding: 0;
   font-size: ${(p) => p.theme.sizing.font[p.css._size!]}px;
   color: ${(p) => p.theme.palette[p.css._color!]};
   font-weight: ${(p) => p.css._weight};

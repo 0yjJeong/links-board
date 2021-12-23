@@ -1,9 +1,13 @@
+import { useEffect, useRef, useState } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
-import { Card, Stack, Input, ButtonFill, ButtonStretch } from '../../';
+import short from 'short-uuid';
+import { Card, Stack, Input, Button, ButtonStretch } from '../../';
 import { ListDefaultProps } from '../list/List.default';
+import { scrapUrl } from '../../../lib/api';
+import { useParams } from 'react-router';
 
 export interface ListInnerDefaultProps extends ListDefaultProps {}
 
@@ -18,10 +22,60 @@ const ListInnerDefault = ({
   cards = [],
   editTitle,
   deleteElement,
+  addElement,
 }: ListInnerDefaultProps) => {
+  const { code } = useParams();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [adding, setAdding] = useState(false);
+
+  useEffect(() => {
+    if (adding) {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.addEventListener('blur', (e) => {
+          let element;
+          if (e.relatedTarget) {
+            (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
+              if (child.textContent === 'ADD') {
+                element = child;
+              }
+            });
+          }
+
+          if (!element) {
+            setAdding(false);
+          }
+        });
+      }
+    }
+  }, [adding]);
+
+  const onScrap = async () => {
+    if (code) {
+      if (inputRef.current) {
+        const url = inputRef.current.value;
+
+        const body = {
+          id: short().new(),
+          attachedTo: list.id,
+          url,
+        };
+        const res = await scrapUrl(code, body);
+
+        const payload = {
+          ...body,
+          data: res,
+        };
+        addElement(payload);
+
+        setAdding(false);
+      }
+    }
+  };
+
   return (
     <>
-      <Stack spacing='normal'>
+      <Stack spacing='normal' align='center'>
         <Input
           theme='subTitle'
           placeholder='List title'
@@ -33,9 +87,9 @@ const ListInnerDefault = ({
             })
           }
         />
-        <ButtonFill>
+        <Button style={{ height: '21.33px' }}>
           <HiMinus onClick={() => deleteElement(list)} />
-        </ButtonFill>
+        </Button>
       </Stack>
       <Droppable droppableId={list.id} type='card'>
         {(provided) => (
@@ -48,10 +102,28 @@ const ListInnerDefault = ({
         )}
       </Droppable>
       <Stack spacing='normal'>
-        <ButtonStretch>
-          <IoMdAdd />
-          <span>ADD CARD</span>
-        </ButtonStretch>
+        {adding ? (
+          <div
+            style={{
+              width: '100%',
+              background: '#fff',
+              borderRadius: '4px',
+              margin: 'auto',
+            }}
+          >
+            <Stack spacing='small'>
+              <Input theme='subTitle' placeholder='http://' ref={inputRef} />
+              <Button themeName='transperent' onClick={onScrap}>
+                ADD
+              </Button>
+            </Stack>
+          </div>
+        ) : (
+          <ButtonStretch onClick={() => setAdding(true)}>
+            <IoMdAdd />
+            <span>ADD CARD</span>
+          </ButtonStretch>
+        )}
       </Stack>
     </>
   );

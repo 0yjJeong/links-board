@@ -3,19 +3,14 @@ import ButtonDefault, { ButtonDefaultProps } from './Button.default';
 
 const ButtonStretchDefault = styled(ButtonDefault)`
   width: 100%;
+  padding: 8px;
 `;
 
 const ButtonStretch = ({
-  buttonStyle = {
-    color: 'grey4',
-    size: 'title1',
-    border: null,
-    background: null,
-    hoverd: 'grey2',
-  },
+  themeName = 'transperent',
   ...rest
 }: ButtonDefaultProps) => {
-  return <ButtonStretchDefault {...rest} buttonStyle={buttonStyle} />;
+  return <ButtonStretchDefault {...rest} themeName={themeName} />;
 };
 
 export default ButtonStretch;

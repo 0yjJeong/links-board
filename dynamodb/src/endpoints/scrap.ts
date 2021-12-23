@@ -19,7 +19,7 @@ const scrapHandler = async (event) => {
         UpdateExpression: `set elements = list_append(if_not_exists(elements, :empty_list), :card)`,
         ExpressionAttributeValues: {
           ':empty_list': [],
-          ':card': [body.data],
+          ':card': [body],
         },
         ReturnValues: 'UPDATED_NEW',
       };

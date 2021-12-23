@@ -40,7 +40,7 @@ export const deleteBoard = async (id: string) => {
   return res;
 };
 
-export const updateBoard = async (id: string, body: Board) => {
+export const updateBoard = async (id: string, body: any) => {
   const response = await fetch(`${DB_ENDPOINT}/board/${id}`, {
     body: JSON.stringify(body),
     method: 'POST',
@@ -53,10 +53,10 @@ export const updateBoard = async (id: string, body: Board) => {
 
 export const scrapUrl = async (
   id: string,
-  url: string
+  body: any
 ): Promise<Card['data']> => {
   const response = await fetch(`${DB_ENDPOINT}/board/${id}/scrap`, {
-    body: JSON.stringify(url),
+    body: JSON.stringify(body),
     method: 'POST',
   });
 
