@@ -57,7 +57,9 @@ export const Board = ({
         </Stack>
         <Stack>
           <Input
-            theme='title1'
+            color='grey5'
+            placeholderColor='grey3'
+            font='title1'
             placeholder='Links board'
             value={title}
             onChange={(e) => editTitle({ title: e.target.value })}

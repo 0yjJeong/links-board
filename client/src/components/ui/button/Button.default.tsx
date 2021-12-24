@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Sizing, Palette } from '../../../constants/theme';
+import { Palette, Font } from '../../../constants/theme';
 
 export type ButtonStyle = {
-  size: keyof Sizing['font'];
+  font: keyof Font;
   color: keyof Palette;
   background: keyof Palette | null;
   border: keyof Palette | null;
@@ -14,21 +14,21 @@ type ButtonTheme = 'fill' | 'transperent' | 'outline';
 export const buttonThemeMap: { [key in ButtonTheme]: ButtonStyle } = {
   fill: {
     color: 'grey4',
-    size: 'subtitle',
+    font: 'subtitle',
     hoverd: 'grey3',
     border: null,
     background: 'grey2',
   },
   outline: {
     color: 'grey5',
-    size: 'title1',
+    font: 'subtitle',
     border: 'grey3',
     background: null,
     hoverd: 'grey1',
   },
   transperent: {
     color: 'grey4',
-    size: 'subtitle',
+    font: 'subtitle',
     hoverd: 'grey2',
     border: null,
     background: null,

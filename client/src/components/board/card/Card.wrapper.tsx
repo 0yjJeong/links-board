@@ -1,22 +1,23 @@
 import { Draggable } from 'react-beautiful-dnd';
-import { CardDefault } from './Card.default';
+import { CardOuterDefault, CardInnerDefault } from '../..';
+import { Card } from '../../../types';
 
 export interface CardWrapperProps {
-  id: string;
+  card: Card;
   index: number;
 }
 
-const CardWrapper = ({ id, index }: CardWrapperProps) => {
+const CardWrapper = ({ card, index }: CardWrapperProps) => {
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={card.id} index={index}>
       {(provided) => (
-        <CardDefault
+        <CardOuterDefault
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          {id}
-        </CardDefault>
+          <CardInnerDefault></CardInnerDefault>
+        </CardOuterDefault>
       )}
     </Draggable>
   );

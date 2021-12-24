@@ -77,7 +77,9 @@ const ListInnerDefault = ({
     <>
       <Stack spacing='normal' align='center'>
         <Input
-          theme='subTitle'
+          color='grey5'
+          placeholderColor='grey3'
+          font='title2'
           placeholder='List title'
           value={list.title}
           onChange={(e) =>
@@ -95,7 +97,7 @@ const ListInnerDefault = ({
         {(provided) => (
           <Body ref={provided.innerRef} {...provided.droppableProps}>
             {cards.map((card, index) => (
-              <Card key={card.id} id={card.id} index={index} />
+              <Card key={card.id} card={card} index={index} />
             ))}
             {provided.placeholder}
           </Body>
@@ -112,7 +114,13 @@ const ListInnerDefault = ({
             }}
           >
             <Stack spacing='small'>
-              <Input theme='subTitle' placeholder='http://' ref={inputRef} />
+              <Input
+                color='grey5'
+                placeholderColor='grey3'
+                font='title2'
+                placeholder='http://'
+                ref={inputRef}
+              />
               <Button themeName='transperent' onClick={onScrap}>
                 ADD
               </Button>

@@ -19,17 +19,29 @@ const theme = {
       normal: 48,
       large: 60,
     },
-    font: {
-      title1: 24,
-      title2: 20,
-      subtitle: 18,
-      body: 14,
-    },
   },
   radii: {
     small: 5,
     normal: 30,
     large: 48,
+  },
+  font: {
+    title1: {
+      size: 24,
+      weight: '600',
+    },
+    title2: {
+      size: 18,
+      weight: 'normal',
+    },
+    subtitle: {
+      size: 14,
+      weight: 'normal',
+    },
+    body: {
+      size: 12,
+      weight: 'normal',
+    },
   },
 };
 
@@ -37,5 +49,6 @@ export type Palette = typeof theme['palette'];
 export type Spacing = typeof theme['spacing'];
 export type Sizing = typeof theme['sizing'];
 export type Radii = typeof theme['radii'];
+export type Font = typeof theme['font'];
 
 export default theme;
