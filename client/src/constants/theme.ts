@@ -35,12 +35,16 @@ const theme = {
       weight: 'normal',
     },
     subtitle: {
+      size: 16,
+      weight: 'normal',
+    },
+    body1: {
       size: 14,
       weight: 'normal',
     },
-    body: {
+    body2: {
       size: 12,
-      weight: 'normal',
+      weight: '600',
     },
   },
 };
