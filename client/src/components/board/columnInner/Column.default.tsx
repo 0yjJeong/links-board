@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
 import short from 'short-uuid';
-import { Card, Stack, Input, Button, ButtonStretch } from '../../';
+import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
 import { scrapUrl } from '../../../lib/api';
 import { useParams } from 'react-router';
 
-export interface ListInnerDefaultProps extends ColumnDefaultProps {}
+export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
 
 const Body = styled.div`
   overflow-y: auto;
@@ -17,13 +17,13 @@ const Body = styled.div`
   padding-right: ${(p) => p.theme.spacing['normal']}px;
 `;
 
-const ListInnerDefault = ({
+const ColumnInnerDefault = ({
   list,
   cards = [],
   onEditTitle,
   onDeleteElement,
   onAddElement,
-}: ListInnerDefaultProps) => {
+}: ColumnInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [adding, setAdding] = useState(false);
@@ -148,4 +148,4 @@ const ListInnerDefault = ({
   );
 };
 
-export default ListInnerDefault;
+export default ColumnInnerDefault;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
-import { ListInner } from '..';
+import { ColumnInner } from '..';
 import { Card, Element, List, TitleProps } from '../../../types';
 
 export const ColumnDefaultOuter = styled.div`
@@ -34,7 +34,7 @@ const ColumnDefault = ({
   onAddElement,
 }: ColumnDefaultProps) => {
   const children = (
-    <ListInner
+    <ColumnInner
       index={index}
       list={list}
       cards={cards}
