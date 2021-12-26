@@ -1,4 +1,4 @@
 export * from './canvas';
 export * from './card';
-export * from './list';
+export * from './column';
 export * from './listInner';

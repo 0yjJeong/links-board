@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
 import short from 'short-uuid';
 import { Card, Stack, Input, Button, ButtonStretch } from '../../';
-import { ListDefaultProps } from '../list/List.default';
+import { ColumnDefaultProps } from '../column/Column.default';
 import { scrapUrl } from '../../../lib/api';
 import { useParams } from 'react-router';
 
-export interface ListInnerDefaultProps extends ListDefaultProps {}
+export interface ListInnerDefaultProps extends ColumnDefaultProps {}
 
 const Body = styled.div`
   overflow-y: auto;
@@ -20,9 +20,9 @@ const Body = styled.div`
 const ListInnerDefault = ({
   list,
   cards = [],
-  editTitle,
-  deleteElement,
-  addElement,
+  onEditTitle,
+  onDeleteElement,
+  onAddElement,
 }: ListInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +50,7 @@ const ListInnerDefault = ({
     }
   }, [adding]);
 
-  const onScrap = async () => {
+  const handleScrap = async () => {
     if (code) {
       if (inputRef.current) {
         const url = inputRef.current.value;
@@ -66,11 +66,22 @@ const ListInnerDefault = ({
           ...body,
           data: res,
         };
-        addElement(payload);
+        onAddElement(payload);
 
         setAdding(false);
       }
     }
+  };
+
+  const handleDeleteColumn = () => {
+    onDeleteElement(list);
+  };
+
+  const handleEditTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onEditTitle({
+      id: list.id,
+      title: e.target.value,
+    });
   };
 
   return (
@@ -82,22 +93,22 @@ const ListInnerDefault = ({
           font='title2'
           placeholder='List title'
           value={list.title}
-          onChange={(e) =>
-            editTitle({
-              id: list.id,
-              title: e.target.value,
-            })
-          }
+          onChange={handleEditTitle}
         />
         <Button style={{ height: '21.33px' }}>
-          <HiMinus onClick={() => deleteElement(list)} />
+          <HiMinus onClick={handleDeleteColumn} />
         </Button>
       </Stack>
       <Droppable droppableId={list.id} type='card'>
         {(provided) => (
           <Body ref={provided.innerRef} {...provided.droppableProps}>
             {cards.map((card, index) => (
-              <Card key={card.id} card={card} index={index} />
+              <Card
+                key={card.id}
+                card={card}
+                index={index}
+                onDeleteElement={onDeleteElement}
+              />
             ))}
             {provided.placeholder}
           </Body>
@@ -121,7 +132,7 @@ const ListInnerDefault = ({
                 placeholder='http://'
                 ref={inputRef}
               />
-              <Button themeName='transperent' onClick={onScrap}>
+              <Button themeName='transperent' onClick={handleScrap}>
                 ADD
               </Button>
             </Stack>

@@ -3,12 +3,12 @@ import { Draggable } from 'react-beautiful-dnd';
 import { ListInner } from '..';
 import { Card, Element, List, TitleProps } from '../../../types';
 
-export const ListDefaultOuter = styled.div`
+export const ColumnDefaultOuter = styled.div`
   width: 340px;
   flex: 0 0 auto;
 `;
 
-export const ListDefaultInner = styled.div`
+export const ColumnDefaultInner = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -16,48 +16,48 @@ export const ListDefaultInner = styled.div`
   border-radius: ${(p) => p.theme.radii['small']}px;
 `;
 
-export interface ListDefaultProps {
+export interface ColumnDefaultProps {
   index: number;
   list: List;
-  cards: Card[] | undefined;
-  editTitle: (payload: TitleProps) => void;
-  deleteElement: (payload: Element) => void;
-  addElement: (payload: Element) => void;
+  cards: Card[];
+  onEditTitle: (payload: TitleProps) => void;
+  onDeleteElement: (payload: Element) => void;
+  onAddElement: (payload: Element) => void;
 }
 
-const ListDefault = ({
+const ColumnDefault = ({
   index,
   list,
   cards,
-  editTitle,
-  deleteElement,
-  addElement,
-}: ListDefaultProps) => {
+  onEditTitle,
+  onDeleteElement,
+  onAddElement,
+}: ColumnDefaultProps) => {
   const children = (
     <ListInner
       index={index}
       list={list}
       cards={cards}
-      editTitle={editTitle}
-      deleteElement={deleteElement}
-      addElement={addElement}
+      onEditTitle={onEditTitle}
+      onDeleteElement={onDeleteElement}
+      onAddElement={onAddElement}
     />
   );
 
   return (
     <Draggable draggableId={list.id} index={index}>
       {(provided) => (
-        <ListDefaultOuter ref={provided.innerRef}>
-          <ListDefaultInner
+        <ColumnDefaultOuter ref={provided.innerRef}>
+          <ColumnDefaultInner
             {...provided.dragHandleProps}
             {...provided.draggableProps}
           >
             {children}
-          </ListDefaultInner>
-        </ListDefaultOuter>
+          </ColumnDefaultInner>
+        </ColumnDefaultOuter>
       )}
     </Draggable>
   );
 };
 
-export default ListDefault;
+export default ColumnDefault;

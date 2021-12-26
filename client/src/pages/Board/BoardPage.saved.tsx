@@ -1,32 +1,60 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
-import { Board, BoardPageDefaultProps, BoardPageWrapper } from '..';
-import { readBoard } from '../../lib/api';
+import { useCallback, useMemo } from 'react';
+import { BoardAPI, BoardProps, BoardTemplate } from '.';
+import { Card, Dragged, Element, TitleProps } from '../../types';
 
-const SavedBoard = ({ setBoard, ...rest }: BoardPageDefaultProps) => {
-  const { code } = useParams();
+export const BoardPageSaved = ({
+  title,
+  lists,
+  cards,
+  addElement,
+  deleteElement,
+  editTitle,
+  dragHappened,
+}: BoardProps) => {
+  const groupedCardsMap = useMemo(
+    () =>
+      cards.reduce((obj, c) => {
+        try {
+          obj[c.attachedTo].push(c);
+        } catch (err) {
+          obj[c.attachedTo] = [c];
+        }
+        return obj;
+      }, {} as { [key: string]: Card[] }),
+    [cards]
+  );
 
-  const [loading, setLoading] = useState(true);
+  const onAddElement = useCallback(
+    (payload: Element) => addElement(payload),
+    [addElement]
+  );
 
-  React.useEffect(() => {
-    const init = async () => {
-      if (code) {
-        const res = await readBoard(code);
-        setBoard(res.Item);
-        setLoading(false);
-      }
-    };
-    init();
-  }, [code, setBoard]);
+  const onDeleteElement = useCallback(
+    (payload: Element) => deleteElement(payload),
+    [deleteElement]
+  );
 
-  if (loading) return null;
+  const onEditTitle = useCallback(
+    (payload: TitleProps) => editTitle(payload),
+    [editTitle]
+  );
 
-  const props = {
-    setBoard,
-    ...rest,
-  };
+  const onDragHappened = useCallback(
+    (payload: Dragged) => dragHappened(payload),
+    [dragHappened]
+  );
 
-  return <Board {...props} />;
+  return (
+    <BoardAPI>
+      <BoardTemplate
+        title={title}
+        lists={lists}
+        groupedCardsMap={groupedCardsMap}
+        onAddElement={onAddElement}
+        onEditTitle={onEditTitle}
+        onDragHappened={onDragHappened}
+        onDeleteElement={onDeleteElement}
+      />
+    </BoardAPI>
+  );
 };
-
-export const SavedBoardPage = () => <BoardPageWrapper Component={SavedBoard} />;
