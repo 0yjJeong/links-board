@@ -2,22 +2,20 @@ import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import {
-  addElement,
-  deleteElement,
+  updateElements,
   editTitle,
   dragHappened,
 } from '../../../store/board/actions';
-import { Element, TitleProps, Dragged, List, Card } from '../../../types';
+import { Element, TitleProps, List, Card } from '../../../types';
 import { RootState } from '../../../store';
 
 export type BoardProps = {
   title: string;
   lists: List[];
   cards: Card[];
-  addElement: (payload: Element) => void;
-  deleteElement: (payload: Element) => void;
+  updateElements: (payload: Element[]) => void;
   editTitle: (payload: TitleProps) => void;
-  dragHappened: (payload: Dragged) => void;
+  dragHappened: (payload: Element[]) => void;
 };
 
 interface WrapperProps extends BoardProps {
@@ -31,10 +29,9 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  addElement: (payload: Element) => dispatch(addElement(payload)),
-  deleteElement: (payload: Element) => dispatch(deleteElement(payload)),
+  updateElements: (payload: Element[]) => dispatch(updateElements(payload)),
   editTitle: (payload: TitleProps) => dispatch(editTitle(payload)),
-  dragHappened: (payload: Dragged) => dispatch(dragHappened(payload)),
+  dragHappened: (payload: Element[]) => dispatch(dragHappened(payload)),
 });
 
 export const BoardPageWrapper = connect(

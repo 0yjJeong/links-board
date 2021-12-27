@@ -23,6 +23,7 @@ export interface ColumnDefaultProps {
   onEditTitle: (payload: TitleProps) => void;
   onDeleteElement: (payload: Element) => void;
   onAddElement: (payload: Element) => void;
+  onInputBlurred: (payload: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const ColumnDefault = ({
@@ -32,6 +33,7 @@ const ColumnDefault = ({
   onEditTitle,
   onDeleteElement,
   onAddElement,
+  onInputBlurred,
 }: ColumnDefaultProps) => {
   const children = (
     <ColumnInner
@@ -41,6 +43,7 @@ const ColumnDefault = ({
       onEditTitle={onEditTitle}
       onDeleteElement={onDeleteElement}
       onAddElement={onAddElement}
+      onInputBlurred={onInputBlurred}
     />
   );
 

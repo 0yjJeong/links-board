@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { BiLink } from 'react-icons/bi';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
@@ -20,10 +21,13 @@ export interface BoardTemplateProps {
   title: string;
   lists: List[];
   groupedCardsMap: { [key: string]: Card[] };
-  onAddElement: (payload: Element) => void;
+  onAddElement: (payload: Element) => Promise<void>;
+  onInputBlurred: (
+    payload: React.ChangeEvent<HTMLInputElement>
+  ) => Promise<void>;
   onEditTitle?: (payload: TitleProps) => void;
-  onDragHappened?: (payload: Dragged) => void;
-  onDeleteElement?: (payload: Element) => void;
+  onDragHappened?: (payload: Dragged) => Promise<void>;
+  onDeleteElement?: (payload: Element) => Promise<void>;
 }
 
 export const BoardTemplate = ({
@@ -31,9 +35,10 @@ export const BoardTemplate = ({
   lists,
   groupedCardsMap,
   onAddElement,
+  onInputBlurred,
+  onDragHappened = async () => {},
   onEditTitle = () => {},
-  onDragHappened = () => {},
-  onDeleteElement = () => {},
+  onDeleteElement = async () => {},
 }: BoardTemplateProps) => (
   <Wrapper axis='column' gap='medium'>
     <Header axis='column' spacing='medium' gap='small'>
@@ -57,11 +62,18 @@ export const BoardTemplate = ({
       </Stack>
       <Stack>
         <Input
+          name='title'
           color='grey5'
           placeholderColor='grey3'
           font='title1'
           placeholder='Links board'
           value={title}
+          onChange={(e) =>
+            onEditTitle({
+              title: e.target.value,
+            })
+          }
+          onBlur={onInputBlurred}
         />
       </Stack>
     </Header>
@@ -76,6 +88,7 @@ export const BoardTemplate = ({
             onEditTitle={onEditTitle}
             onDeleteElement={onDeleteElement}
             onAddElement={onAddElement}
+            onInputBlurred={onInputBlurred}
           />
         ))}
       </>

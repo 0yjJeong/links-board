@@ -23,6 +23,7 @@ const ColumnInnerDefault = ({
   onEditTitle,
   onDeleteElement,
   onAddElement,
+  onInputBlurred,
 }: ColumnInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,6 +95,7 @@ const ColumnInnerDefault = ({
           placeholder='List title'
           value={list.title}
           onChange={handleEditTitle}
+          onBlur={onInputBlurred}
         />
         <Button style={{ height: '21.33px' }}>
           <HiMinus onClick={handleDeleteColumn} />
