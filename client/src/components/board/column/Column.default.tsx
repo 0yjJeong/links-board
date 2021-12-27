@@ -47,11 +47,11 @@ const ColumnDefault = ({
   return (
     <Draggable draggableId={list.id} index={index}>
       {(provided) => (
-        <ColumnDefaultOuter ref={provided.innerRef}>
-          <ColumnDefaultInner
-            {...provided.dragHandleProps}
-            {...provided.draggableProps}
-          >
+        <ColumnDefaultOuter
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
+          <ColumnDefaultInner {...provided.dragHandleProps}>
             {children}
           </ColumnDefaultInner>
         </ColumnDefaultOuter>
