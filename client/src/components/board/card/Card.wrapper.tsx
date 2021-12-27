@@ -33,7 +33,7 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
           {...provided.draggableProps}
         >
           <CardInnerDefault>
-            <Stack gap='large'>
+            <Stack gap='large' spacing='normal'>
               <Text font='body2' color='grey4'>
                 <Link href={card.url} target='_blank' rel='noreferrer'>
                   <HiOutlineExternalLink
@@ -50,11 +50,11 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
               </Button>
             </Stack>
             {card.data.image && (
-              <Stack>
-                <Image imageURL={card.data.image} />
+              <Stack spacing='normal'>
+                <Image imageURL={card.data.image} radii='small' />
               </Stack>
             )}
-            <Stack axis='column'>
+            <Stack axis='column' spacing='normal'>
               <Text font='subtitle' color='grey5'>
                 {safe(
                   () => limitTextLength(card.data.title, 96),

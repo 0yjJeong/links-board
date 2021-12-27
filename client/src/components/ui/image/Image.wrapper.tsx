@@ -1,11 +1,16 @@
-import { ImageDefault } from '..';
+import { useMemo } from 'react';
+import { ImageDefault, ImageDefaultProps } from '..';
 
-interface ImageWrapperProps {
-  imageURL: string;
-}
+const ImageWrapper = (props: ImageDefaultProps) => {
+  const validation = useMemo(() => {
+    if (!props.imageURL) return false;
+    const regex = new RegExp(/.*\.(gif|jpe?g|bmp|png)$/gim);
+    return regex.test(props.imageURL);
+  }, [props.imageURL]);
 
-const ImageWrapper = ({ imageURL }: ImageWrapperProps) => {
-  return <ImageDefault imageURL={imageURL} />;
+  if (!validation) return null;
+
+  return <ImageDefault {...props} />;
 };
 
 export default ImageWrapper;

@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 export const CardInnerDefault = styled.div`
-  padding: ${(p) => p.theme.spacing['normal']}px;
+  div {
+    &:first-child {
+      border-bottom: 1px solid ${(p) => p.theme.palette['grey1']};
+    }
 
-  & > div {
-    &:nth-child(2),
     &:nth-child(3) {
-      margin-top: ${(p) => p.theme.spacing['normal']}px;
+      margin-top: ${(p) => p.theme.spacing['small']}px;
     }
   }
 `;
