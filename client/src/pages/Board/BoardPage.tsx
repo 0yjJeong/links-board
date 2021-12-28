@@ -1,26 +1,68 @@
 import { useCallback, ChangeEvent } from 'react';
+import short from 'short-uuid';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { BoardTemplate } from '..';
+import { createBoard } from '../../lib/api';
+import { TitleProps } from '../../types';
+import { editTitle } from '../../store/board/actions';
+import { RootState } from '../../store';
 
 export const BoardPage = () => {
-  const onAddElement = useCallback(async () => {}, []);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onEditTitle = useCallback(() => {}, []);
+  const title = useSelector((state: RootState) => state.board.title);
+
+  const onAddElement = useCallback(async () => {
+    const body = {
+      id: short().new(),
+      title: '',
+      elements: [
+        {
+          id: short().new(),
+          title: '',
+        },
+      ],
+    };
+
+    await createBoard(body);
+
+    localStorage.setItem('board', JSON.stringify(body));
+
+    navigate(`/board/${body.id}`);
+  }, [navigate]);
 
   const onInputBlurred = useCallback(
     async (payload: ChangeEvent<HTMLInputElement>) => {
-      console.log('blurred');
+      const body = {
+        id: short().new(),
+        title: payload.target.value,
+        elements: [],
+      };
+
+      await createBoard(body);
+
+      localStorage.setItem('board', JSON.stringify(body));
+
+      navigate(`/board/${body.id}`);
     },
-    []
+    [navigate]
+  );
+
+  const onEditTitle = useCallback(
+    (payload: TitleProps) => dispatch(editTitle(payload)),
+    [dispatch]
   );
 
   return (
     <BoardTemplate
-      title=''
+      title={title}
       lists={[]}
       groupedCardsMap={{}}
       onAddElement={onAddElement}
-      onInputBlurred={onInputBlurred}
       onEditTitle={onEditTitle}
+      onInputBlurred={onInputBlurred}
     />
   );
 };

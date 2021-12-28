@@ -1,14 +1,14 @@
-import { Card, InitialBoard, Board } from '../types';
+import { Card, InitialBoard } from '../types';
 import config from './config';
 
 const DB_ENDPOINT = config.databaseURL + '/' + config.stage;
 
 export const createBoard = async (
-  body: Board
+  body: any
 ): Promise<{
   Item: InitialBoard;
 }> => {
-  const response = await fetch(DB_ENDPOINT, {
+  const response = await fetch(`${DB_ENDPOINT}/board`, {
     body: JSON.stringify(body),
     method: 'POST',
   });
