@@ -126,6 +126,12 @@ export const BoardPageSaved = ({
     [code, prevLists, prevCards, dragHappened]
   );
 
+  const onTextToClipboard = useCallback(() => {
+    if (code) {
+      navigator.clipboard.writeText(code);
+    }
+  }, [code]);
+
   return (
     <BoardAPI>
       <BoardTemplate
@@ -137,6 +143,7 @@ export const BoardPageSaved = ({
         onInputBlurred={onInputBlurred}
         onDragHappened={onDragHappened}
         onDeleteElement={onDeleteElement}
+        onTextToClipboard={onTextToClipboard}
       />
     </BoardAPI>
   );

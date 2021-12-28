@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { BiLink } from 'react-icons/bi';
+import { BiLink, BiUnlink } from 'react-icons/bi';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
 import { Canvas, Column, Stack, Input, Button } from '../../../components';
@@ -31,6 +31,7 @@ export interface BoardTemplateProps {
   onEditTitle?: (payload: TitleProps) => void;
   onDragHappened?: (payload: Dragged) => Promise<void>;
   onDeleteElement?: (payload: Element) => Promise<void>;
+  onTextToClipboard?: () => void;
 }
 
 export const BoardTemplate = ({
@@ -42,6 +43,7 @@ export const BoardTemplate = ({
   onDragHappened = async () => {},
   onEditTitle = () => {},
   onDeleteElement = async () => {},
+  onTextToClipboard = () => {},
 }: BoardTemplateProps) => {
   const navigate = useNavigate();
   const { code } = useParams();
@@ -67,9 +69,17 @@ export const BoardTemplate = ({
       <Header axis='column' spacing='medium' gap='small'>
         <Stack justify='space-between'>
           <Stack>
-            <Button themeName='outline'>
-              <BiLink />
-              code
+            <Button themeName='outline' onClick={onTextToClipboard}>
+              {code ? (
+                <>
+                  <BiLink />
+                  {code}
+                </>
+              ) : (
+                <>
+                  <BiUnlink />
+                </>
+              )}
             </Button>
           </Stack>
           <Stack gap='small'>
