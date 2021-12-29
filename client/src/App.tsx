@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { GlobalStyle } from './components';
+import { GlobalStyle, Base } from './components';
 import theme from './constants/theme';
 import { BoardPage, BoardPageSaved, BoardPageWrapper, HomePage } from './pages';
 
@@ -10,11 +10,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route index element={<HomePage />} />
-          <Route path='board' element={<BoardPage />} />
-          <Route
-            path='board/:code'
-            element={<BoardPageWrapper Component={BoardPageSaved} />}
-          />
+          <Route path='board' element={<Base />}>
+            <Route index element={<BoardPage />} />
+            <Route
+              path=':code'
+              element={<BoardPageWrapper Component={BoardPageSaved} />}
+            />
+          </Route>
         </Routes>
         <GlobalStyle />
       </ThemeProvider>

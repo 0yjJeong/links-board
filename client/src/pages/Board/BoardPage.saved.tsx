@@ -12,6 +12,7 @@ export const BoardPageSaved = ({
   updateElements,
   editTitle,
   dragHappened,
+  setToast,
 }: BoardProps) => {
   const { code } = useParams();
 
@@ -126,11 +127,12 @@ export const BoardPageSaved = ({
     [code, prevLists, prevCards, dragHappened]
   );
 
-  const onTextToClipboard = useCallback(() => {
+  const onCopyLink = useCallback(() => {
     if (code) {
       navigator.clipboard.writeText(code);
+      setToast('Copied to clipboard');
     }
-  }, [code]);
+  }, [code, setToast]);
 
   return (
     <BoardAPI>
@@ -143,7 +145,7 @@ export const BoardPageSaved = ({
         onInputBlurred={onInputBlurred}
         onDragHappened={onDragHappened}
         onDeleteElement={onDeleteElement}
-        onTextToClipboard={onTextToClipboard}
+        onCopyLink={onCopyLink}
       />
     </BoardAPI>
   );

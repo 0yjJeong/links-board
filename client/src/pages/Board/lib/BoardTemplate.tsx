@@ -31,7 +31,7 @@ export interface BoardTemplateProps {
   onEditTitle?: (payload: TitleProps) => void;
   onDragHappened?: (payload: Dragged) => Promise<void>;
   onDeleteElement?: (payload: Element) => Promise<void>;
-  onTextToClipboard?: () => void;
+  onCopyLink?: () => void;
 }
 
 export const BoardTemplate = ({
@@ -43,7 +43,7 @@ export const BoardTemplate = ({
   onDragHappened = async () => {},
   onEditTitle = () => {},
   onDeleteElement = async () => {},
-  onTextToClipboard = () => {},
+  onCopyLink = () => {},
 }: BoardTemplateProps) => {
   const navigate = useNavigate();
   const { code } = useParams();
@@ -69,7 +69,7 @@ export const BoardTemplate = ({
       <Header axis='column' spacing='medium' gap='small'>
         <Stack justify='space-between'>
           <Stack>
-            <Button themeName='outline' onClick={onTextToClipboard}>
+            <Button themeName='outline' onClick={onCopyLink}>
               {code ? (
                 <>
                   <BiLink />

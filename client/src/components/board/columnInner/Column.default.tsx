@@ -134,7 +134,7 @@ const ColumnInnerDefault = ({
                 placeholder='http://'
                 ref={inputRef}
               />
-              <Button themeName='transperent' onClick={handleScrap}>
+              <Button themeName='transperent1' onClick={handleScrap}>
                 ADD
               </Button>
             </Stack>
