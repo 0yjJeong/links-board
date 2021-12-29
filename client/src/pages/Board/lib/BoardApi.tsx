@@ -28,6 +28,16 @@ export const BoardAPI: FC = ({ children }) => {
       }
     };
     init();
+
+    return () => {
+      dispatch(
+        setBoard({
+          id: '',
+          title: '',
+          elements: [],
+        })
+      );
+    };
   }, [code, dispatch]);
 
   if (loading) return null;
