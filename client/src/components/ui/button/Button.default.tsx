@@ -6,10 +6,10 @@ export type ButtonStyle = {
   color: keyof Palette;
   background: keyof Palette | null;
   border: keyof Palette | null;
-  hoverd: keyof Palette;
+  hoverd: keyof Palette | null;
 };
 
-type ButtonTheme = 'fill' | 'transperent' | 'outline';
+type ButtonTheme = 'fill' | 'transperent1' | 'transperent2' | 'outline';
 
 export const buttonThemeMap: { [key in ButtonTheme]: ButtonStyle } = {
   fill: {
@@ -26,10 +26,17 @@ export const buttonThemeMap: { [key in ButtonTheme]: ButtonStyle } = {
     background: null,
     hoverd: 'grey1',
   },
-  transperent: {
+  transperent1: {
     color: 'grey4',
     font: 'subtitle',
     hoverd: 'grey2',
+    border: null,
+    background: null,
+  },
+  transperent2: {
+    color: 'grey4',
+    font: 'subtitle',
+    hoverd: null,
     border: null,
     background: null,
   },
@@ -58,10 +65,17 @@ const ButtonDefault = styled.button<ButtonDefaultProps>`
     let buttonCSS = `
     color: ${p.theme.palette[buttonTheme.color]};
 
+    
+
+ 
+    `;
+
+    buttonTheme.hoverd &&
+      (buttonCSS += `
     &:hover {
       background: ${p.theme.palette[buttonTheme.hoverd]};
     }
-    `;
+  `);
 
     buttonTheme.background &&
       (buttonCSS += `
