@@ -6,7 +6,7 @@ export interface ImageDefaultProps {
   radii: keyof Radii;
 }
 
-export const ImageDefault = styled.div<ImageDefaultProps>`
+const ImageDefault = styled.div<ImageDefaultProps>`
   background-image: url(${(p) => p.imageURL});
   background-position: center;
   background-size: cover;
@@ -14,3 +14,5 @@ export const ImageDefault = styled.div<ImageDefaultProps>`
   width: 100%;
   border-radius: ${(p) => p.theme.radii[p.radii]}px;
 `;
+
+export default ImageDefault;
