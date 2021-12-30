@@ -7,6 +7,7 @@ export const GlobalStyle = createGlobalStyle`
         height: 100%;
         border: 0;
         font-size: 100%;
+        font-family: "NotoSansKR-Regular"
     }
     body {
         line-height: 1;

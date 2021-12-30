@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import { GlobalStyle, Base } from './components';
 import theme from './constants/theme';
 import { BoardPage, BoardPageSaved, BoardPageWrapper, HomePage } from './pages';
+import './App.css';
 
 function App() {
   return (
