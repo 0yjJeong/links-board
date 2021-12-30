@@ -24,6 +24,7 @@ export interface ColumnDefaultProps {
   onDeleteElement: (payload: Element) => void;
   onAddElement: (payload: Element) => void;
   onInputBlurred: (payload: React.ChangeEvent<HTMLInputElement>) => void;
+  onScrap: (payload: Omit<Card, 'data'>) => Promise<void>;
 }
 
 const ColumnDefault = ({
@@ -34,6 +35,7 @@ const ColumnDefault = ({
   onDeleteElement,
   onAddElement,
   onInputBlurred,
+  onScrap,
 }: ColumnDefaultProps) => {
   const children = (
     <ColumnInner
@@ -44,6 +46,7 @@ const ColumnDefault = ({
       onDeleteElement={onDeleteElement}
       onAddElement={onAddElement}
       onInputBlurred={onInputBlurred}
+      onScrap={onScrap}
     />
   );
 

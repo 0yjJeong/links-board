@@ -32,6 +32,7 @@ export interface BoardTemplateProps {
   onDragHappened?: (payload: Dragged) => Promise<void>;
   onDeleteElement?: (payload: Element) => Promise<void>;
   onCopyLink?: () => void;
+  onScrap?: (payload: Omit<Card, 'data'>) => Promise<void>;
 }
 
 export const BoardTemplate = ({
@@ -44,6 +45,7 @@ export const BoardTemplate = ({
   onEditTitle = () => {},
   onDeleteElement = async () => {},
   onCopyLink = () => {},
+  onScrap = async () => {},
 }: BoardTemplateProps) => {
   const navigate = useNavigate();
   const { code } = useParams();
@@ -122,6 +124,7 @@ export const BoardTemplate = ({
               onDeleteElement={onDeleteElement}
               onAddElement={onAddElement}
               onInputBlurred={onInputBlurred}
+              onScrap={onScrap}
             />
           ))}
         </>

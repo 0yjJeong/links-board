@@ -6,8 +6,8 @@ import { IoMdAdd } from 'react-icons/io';
 import short from 'short-uuid';
 import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
-import { scrapUrl } from '../../../lib/api';
 import { useParams } from 'react-router';
+import { isCard } from '../../../utils/board';
 
 export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
 
@@ -24,6 +24,7 @@ const ColumnInnerDefault = ({
   onDeleteElement,
   onAddElement,
   onInputBlurred,
+  onScrap,
 }: ColumnInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,22 +55,30 @@ const ColumnInnerDefault = ({
   const handleScrap = async () => {
     if (code) {
       if (inputRef.current) {
-        const url = inputRef.current.value;
+        try {
+          const url = inputRef.current.value;
 
-        const body = {
-          id: short().new(),
-          attachedTo: list.id,
-          url,
-        };
-        const res = await scrapUrl(code, body);
+          const body = {
+            id: short().new(),
+            attachedTo: list.id,
+            url,
+          };
 
-        const payload = {
-          ...body,
-          data: res,
-        };
-        onAddElement(payload);
+          const res = await onScrap(body);
 
-        setAdding(false);
+          const payload = {
+            ...body,
+            data: res as any,
+          };
+
+          if (payload && isCard(payload)) {
+            onAddElement(payload);
+          }
+
+          setAdding(false);
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
   };

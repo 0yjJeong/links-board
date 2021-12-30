@@ -1,4 +1,4 @@
-import { Card, InitialBoard } from '../types';
+import { InitialBoard } from '../types';
 import config from './config';
 
 const DB_ENDPOINT = config.databaseURL + '/' + config.stage;
@@ -18,9 +18,7 @@ export const createBoard = async (
   return res;
 };
 
-export const readBoard = async (
-  id: string
-): Promise<{ Item: InitialBoard }> => {
+export const readBoard = async (id: string) => {
   const response = await fetch(`${DB_ENDPOINT}/board/${id}`, {
     method: 'GET',
   });
@@ -51,10 +49,7 @@ export const updateBoard = async (id: string, body: any) => {
   return res;
 };
 
-export const scrapUrl = async (
-  id: string,
-  body: any
-): Promise<Card['data']> => {
+export const scrapUrl = async (id: string, body: any) => {
   const response = await fetch(`${DB_ENDPOINT}/board/${id}/scrap`, {
     body: JSON.stringify(body),
     method: 'POST',
