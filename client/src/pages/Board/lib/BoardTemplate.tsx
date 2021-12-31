@@ -67,7 +67,7 @@ export const BoardTemplate = ({
   }, [code, navigate]);
 
   return (
-    <Wrapper axis='column' gap='medium'>
+    <>
       <Header axis='column' spacing='medium' gap='small'>
         <Stack justify='space-between'>
           <Stack>
@@ -101,7 +101,7 @@ export const BoardTemplate = ({
             color='grey5'
             placeholderColor='grey3'
             font='title1'
-            placeholder='Links board'
+            placeholder='Board title'
             value={title}
             onChange={(e) =>
               onEditTitle({
@@ -129,6 +129,6 @@ export const BoardTemplate = ({
           ))}
         </>
       </Canvas>
-    </Wrapper>
+    </>
   );
 };

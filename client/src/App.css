@@ -3,3 +3,32 @@
   font-weight: 400;
   src: url('./fonts/Noto_Sans_KR/NotoSansKR-Regular.otf');
 }
+
+.Home__texts {
+  margin-bottom: 3rem;
+}
+
+.Home__texts:nth-child(2) {
+  padding-top: 1rem;
+}
+
+.home__checkbox {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 1rem;
+}
+
+.home__checkbox-icon {
+  background: #00c771;
+  padding: 4px;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.home__checkbox-cation {
+  margin: 0;
+  height: inherit;
+  display: flex;
+  align-items: center;
+  color: #a4a4a4;
+}

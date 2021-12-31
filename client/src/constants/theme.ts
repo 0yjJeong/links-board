@@ -6,12 +6,19 @@ const theme = {
     grey3: '#DDDDDD',
     grey4: '#A4A4A4',
     grey5: '#3E3E3E',
+
+    blue0: '#9dbceb',
+    blue1: '#6294df',
+    blue2: '#2a6dcf',
+    blue3: '#1e4d94',
+    blue4: '#122e59',
+    blue5: '#0c1f3b',
   },
   spacing: {
     small: 4,
     normal: 8,
     medium: 12,
-    large: 16,
+    large: 60,
   },
   sizing: {
     button: {
@@ -26,6 +33,10 @@ const theme = {
     large: 48,
   },
   font: {
+    slogan: {
+      size: 42,
+      weight: '600',
+    },
     title1: {
       size: 24,
       weight: '600',

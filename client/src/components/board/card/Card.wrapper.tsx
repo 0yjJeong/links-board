@@ -34,7 +34,7 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
         >
           <CardInnerDefault>
             <Stack gap='large' spacing='normal'>
-              <Text font='body2' color='grey4'>
+              <Text font='body2' color='grey4' justify='start'>
                 <Link href={card.url} target='_blank' rel='noreferrer'>
                   <HiOutlineExternalLink
                     style={{
@@ -55,13 +55,13 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
               </Stack>
             )}
             <Stack axis='column' spacing='normal'>
-              <Text font='subtitle' color='grey5'>
+              <Text font='subtitle' color='grey5' justify='start'>
                 {safe(
                   () => limitTextLength(card.data.title, 96),
                   'Undefined title'
                 )}
               </Text>
-              <Text font='body1' color='grey4'>
+              <Text font='body1' color='grey4' justify='start'>
                 {safe(
                   () => limitTextLength(card.data.description, 190),
                   'This link does not contain description.'
