@@ -14,17 +14,19 @@ export const HomePage = () => {
             With the links board, it's easier to manage the list of links.
           </Text>
         </div>
-        <div className='home__checkbox'>
-          <div className='home__checkbox-icon'>
-            <FaCheck />
+        <div className='home__checkboxes'>
+          <div className='home__checkbox'>
+            <div className='home__checkbox-icon'>
+              <FaCheck />
+            </div>
+            <div className='home__checkbox-cation'>Board format</div>
           </div>
-          <div className='home__checkbox-cation'>Board format</div>
-        </div>
-        <div className='home__checkbox'>
-          <div className='home__checkbox-icon'>
-            <FaCheck />
+          <div className='home__checkbox'>
+            <div className='home__checkbox-icon'>
+              <FaCheck />
+            </div>
+            <div className='home__checkbox-cation'>Share with other people</div>
           </div>
-          <div className='home__checkbox-cation'>Share with other people</div>
         </div>
       </div>
       <Link to='/board' style={{ textDecoration: 'none' }}>
