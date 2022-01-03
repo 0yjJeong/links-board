@@ -1,6 +1,7 @@
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { TableName } from '../common/config';
 import dynamoClient from '../common/dynamoClient';
+import { headers } from '../common/headers';
 import lambda from '../common/lambda';
 
 const deleteBoardHandler = async (event) => {
@@ -20,12 +21,14 @@ const deleteBoardHandler = async (event) => {
           message: 'Deleted successfully',
         }),
         statusCode: 200,
+        headers,
       };
       return { response, error: null };
     } catch (error) {
       const response = {
         body: JSON.stringify(error),
         statusCode: 500,
+        headers,
       };
       return { response, error };
     }
@@ -35,6 +38,7 @@ const deleteBoardHandler = async (event) => {
         message: 'Missing the id from the path',
       }),
       statusCode: 400,
+      headers,
     };
     return { response, error: null };
   }

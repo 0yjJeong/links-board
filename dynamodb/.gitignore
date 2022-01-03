@@ -10,3 +10,6 @@
 
 # webpack
 .webpack
+
+# serverless
+.serverless

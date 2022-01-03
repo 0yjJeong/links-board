@@ -3,6 +3,7 @@ import dynamoClient from '../common/dynamoClient';
 import lambda from '../common/lambda';
 import bodyParser from '../common/bodyParser';
 import { TableName } from '../common/config';
+import { headers } from '../common/headers';
 
 const updateBoardHandler = async (event) => {
   const body = bodyParser(event);
@@ -44,6 +45,7 @@ const updateBoardHandler = async (event) => {
       const response = {
         body: JSON.stringify(data),
         statusCode: 200,
+        headers,
       };
       return {
         response,
@@ -53,6 +55,7 @@ const updateBoardHandler = async (event) => {
       const response = {
         body: JSON.stringify(error),
         statusCode: 500,
+        headers,
       };
       return { response, error };
     }
@@ -63,6 +66,7 @@ const updateBoardHandler = async (event) => {
         message: 'Bad input data or missing text',
       }),
       statusCode: 422,
+      headers,
     };
     return { response, error: null };
   }

@@ -8,15 +8,24 @@
       "name": "aws",
       "runtime": "nodejs14.x",
       "stage": "production",
-      "region": "ap-northeast-2",
+      "region": "us-east-1",
       "lambdaHashingVersion": "20201221",
       "environment": {
         "DYNAMODB_TABLE": "db-service-production",
-        "API_HOST": "r4wr68tz1m.execute-api.ap-northeast-2.amazonaws.com",
-        "API_URI": "https://r4wr68tz1m.execute-api.ap-northeast-2.amazonaws.com",
+        "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
         "DYNAMO_TABLE": "db-service-production"
       },
       "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "xray:PutTraceSegments",
+            "xray:PutTelemetryRecords"
+          ],
+          "Resource": [
+            "*"
+          ]
+        },
         {
           "Effect": "Allow",
           "Action": [
@@ -24,9 +33,10 @@
             "dynamodb:Scan",
             "dynamodb:GetItem",
             "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
             "dynamodb:DeleteItem"
           ],
-          "Resource": "arn:aws:dynamodb:ap-northeast-2:*:table/db-service-production"
+          "Resource": "arn:aws:dynamodb:us-east-1:*:table/db-service-production"
         }
       ],
       "versionFunctions": true,
@@ -103,10 +113,34 @@
               }
             }
           },
-          "CreateLogGroup": {
+          "CreateBoardLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/db-service-production-create"
+              "LogGroupName": "/aws/lambda/db-service-production-createBoard"
+            }
+          },
+          "DeleteBoardLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/db-service-production-deleteBoard"
+            }
+          },
+          "ReadBoardLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/db-service-production-readBoard"
+            }
+          },
+          "UpdateBoardLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/db-service-production-updateBoard"
+            }
+          },
+          "ScrapLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/db-service-production-scrap"
             }
           },
           "IamRoleLambdaExecution": {
@@ -168,6 +202,9 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][1]"
                       }
                     ]
                   }
@@ -189,25 +226,24 @@
               }
             }
           },
-          "CreateLambdaFunction": {
+          "CreateBoardLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/db-service/production/1636172664205-2021-11-06T04:24:24.205Z/create.zip"
+                "S3Key": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z/createBoard.zip"
               },
-              "Handler": "src/create.create",
+              "Handler": "src/endpoints/boardCreate.createBoard",
               "Runtime": "nodejs14.x",
-              "FunctionName": "db-service-production-create",
+              "FunctionName": "db-service-production-createBoard",
               "MemorySize": 1024,
-              "Timeout": 10,
+              "Timeout": 6,
               "Environment": {
                 "Variables": {
                   "DYNAMODB_TABLE": "db-service-production",
-                  "API_HOST": "r4wr68tz1m.execute-api.ap-northeast-2.amazonaws.com",
-                  "API_URI": "https://r4wr68tz1m.execute-api.ap-northeast-2.amazonaws.com",
+                  "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
                   "DYNAMO_TABLE": "db-service-production"
                 }
               },
@@ -219,17 +255,185 @@
               }
             },
             "DependsOn": [
-              "CreateLogGroup"
+              "CreateBoardLogGroup"
             ]
           },
-          "CreateLambdaVersionCJ6bU7GVr4jzMDEH3CyKYPdq52sgRA4UIowcb8yoyI": {
+          "DeleteBoardLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z/deleteBoard.zip"
+              },
+              "Handler": "src/endpoints/boardDelete.deleteBoard",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "db-service-production-deleteBoard",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE": "db-service-production",
+                  "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
+                  "DYNAMO_TABLE": "db-service-production"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteBoardLogGroup"
+            ]
+          },
+          "ReadBoardLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z/readBoard.zip"
+              },
+              "Handler": "src/endpoints/boardRead.readBoard",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "db-service-production-readBoard",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE": "db-service-production",
+                  "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
+                  "DYNAMO_TABLE": "db-service-production"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ReadBoardLogGroup"
+            ]
+          },
+          "UpdateBoardLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z/updateBoard.zip"
+              },
+              "Handler": "src/endpoints/boardUpdate.updateBoard",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "db-service-production-updateBoard",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE": "db-service-production",
+                  "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
+                  "DYNAMO_TABLE": "db-service-production"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateBoardLogGroup"
+            ]
+          },
+          "ScrapLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z/scrap.zip"
+              },
+              "Handler": "src/endpoints/scrap.scrap",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "db-service-production-scrap",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE": "db-service-production",
+                  "ORIGIN": "http://client-app-s3-bucket.s3-website.ap-northeast-2.amazonaws.com",
+                  "DYNAMO_TABLE": "db-service-production"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ScrapLogGroup"
+            ]
+          },
+          "DeleteBoardLambdaVersionexyE52oUNRhJUZYq0tkcvf2m7xXPJnMP5PKunxKa7RI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "CreateLambdaFunction"
+                "Ref": "DeleteBoardLambdaFunction"
               },
-              "CodeSha256": "yiv1JOcOu5EW3kfeRXacEH4pEkvHbdXm/8cqkKrm5NE="
+              "CodeSha256": "wzRCIXX1wCvX+vZKyGbs87WDxSgHmUyfaP3QqQXEfJ0="
+            }
+          },
+          "CreateBoardLambdaVersionhgUM5GGyh0wQt1byIuHasMXBuq8h39ZRz2gKD94": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateBoardLambdaFunction"
+              },
+              "CodeSha256": "z9Yizqgl1MITJOFNRdofvPZETzD40/qo7sofzYbYE4g="
+            }
+          },
+          "UpdateBoardLambdaVersionlPj74AXYasp4W2dXKfNXyUprKizYAPb5AcsIC3YJQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateBoardLambdaFunction"
+              },
+              "CodeSha256": "nlZc1zEg+4Fa9RBNBFiTkpcJmgfHjqXj+oaihhqHOVg="
+            }
+          },
+          "ReadBoardLambdaVersionLx3h1q0KaoW7YbdiNSaHprF1Lo6XMFO9kE7IFExU89I": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ReadBoardLambdaFunction"
+              },
+              "CodeSha256": "3vyWUhvEKOPdTe2PObc9fiouI2Hge6QUjtPdldNJSzw="
+            }
+          },
+          "ScrapLambdaVersion8f7xJy2pQ0BTZMSsQg6mDY6L4yo4qMhGn7haZ2bPU8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ScrapLambdaFunction"
+              },
+              "CodeSha256": "nwOACY4i+vBk6tuQvNk2Am3L0oLb+LZRyikpxTHj+ak="
             }
           },
           "ApiGatewayRestApi": {
@@ -254,6 +458,30 @@
                 ]
               },
               "PathPart": "board",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBoardIdVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBoard"
+              },
+              "PathPart": "{id}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBoardIdVarScrap": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBoardIdVar"
+              },
+              "PathPart": "scrap",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -304,6 +532,96 @@
               }
             }
           },
+          "ApiGatewayMethodBoardIdVarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST,GET,DELETE'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodBoardIdVarScrapOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVarScrap"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodBoardPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -335,7 +653,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "CreateLambdaFunction",
+                          "CreateBoardLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -347,10 +665,194 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "CreateLambdaPermissionApiGateway"
+              "CreateBoardLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1636172653158": {
+          "ApiGatewayMethodBoardIdVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteBoardLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "DeleteBoardLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBoardIdVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ReadBoardLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ReadBoardLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBoardIdVarPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateBoardLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "UpdateBoardLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodBoardIdVarScrapPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBoardIdVarScrap"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ScrapLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ScrapLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1641186371612": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -360,15 +862,169 @@
             },
             "DependsOn": [
               "ApiGatewayMethodBoardOptions",
-              "ApiGatewayMethodBoardPost"
+              "ApiGatewayMethodBoardIdVarOptions",
+              "ApiGatewayMethodBoardIdVarScrapOptions",
+              "ApiGatewayMethodBoardPost",
+              "ApiGatewayMethodBoardIdVarDelete",
+              "ApiGatewayMethodBoardIdVarGet",
+              "ApiGatewayMethodBoardIdVarPost",
+              "ApiGatewayMethodBoardIdVarScrapPost"
             ]
           },
-          "CreateLambdaPermissionApiGateway": {
+          "CreateBoardLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "CreateLambdaFunction",
+                  "CreateBoardLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteBoardLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteBoardLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ReadBoardLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ReadBoardLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateBoardLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateBoardLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ScrapLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ScrapLambdaFunction",
                   "Arn"
                 ]
               },
@@ -433,13 +1089,49 @@
               "Name": "sls-db-service-production-ServerlessDeploymentBucketName"
             }
           },
-          "CreateLambdaFunctionQualifiedArn": {
+          "DeleteBoardLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionCJ6bU7GVr4jzMDEH3CyKYPdq52sgRA4UIowcb8yoyI"
+              "Ref": "DeleteBoardLambdaVersionexyE52oUNRhJUZYq0tkcvf2m7xXPJnMP5PKunxKa7RI"
             },
             "Export": {
-              "Name": "sls-db-service-production-CreateLambdaFunctionQualifiedArn"
+              "Name": "sls-db-service-production-DeleteBoardLambdaFunctionQualifiedArn"
+            }
+          },
+          "CreateBoardLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateBoardLambdaVersionhgUM5GGyh0wQt1byIuHasMXBuq8h39ZRz2gKD94"
+            },
+            "Export": {
+              "Name": "sls-db-service-production-CreateBoardLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateBoardLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateBoardLambdaVersionlPj74AXYasp4W2dXKfNXyUprKizYAPb5AcsIC3YJQ"
+            },
+            "Export": {
+              "Name": "sls-db-service-production-UpdateBoardLambdaFunctionQualifiedArn"
+            }
+          },
+          "ReadBoardLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ReadBoardLambdaVersionLx3h1q0KaoW7YbdiNSaHprF1Lo6XMFO9kE7IFExU89I"
+            },
+            "Export": {
+              "Name": "sls-db-service-production-ReadBoardLambdaFunctionQualifiedArn"
+            }
+          },
+          "ScrapLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ScrapLambdaVersion8f7xJy2pQ0BTZMSsQg6mDY6L4yo4qMhGn7haZ2bPU8"
+            },
+            "Export": {
+              "Name": "sls-db-service-production-ScrapLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -557,7 +1249,7 @@
     "custom": {
       "defaultStage": "dev",
       "currentStage": "production",
-      "currentRegion": "ap-northeast-2",
+      "currentRegion": "us-east-1",
       "dynamodb": {
         "stages": [
           "dev"
@@ -585,9 +1277,8 @@
     ],
     "pluginsData": {},
     "functions": {
-      "create": {
-        "handler": "src/create.create",
-        "timeout": 10,
+      "createBoard": {
+        "handler": "src/endpoints/boardCreate.createBoard",
         "events": [
           {
             "http": {
@@ -611,23 +1302,165 @@
               },
               "integration": "AWS_PROXY"
             }
-          },
+          }
+        ],
+        "name": "db-service-production-createBoard",
+        "package": {
+          "artifact": ".serverless/createBoard.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "CreateBoardLambdaVersionhgUM5GGyh0wQt1byIuHasMXBuq8h39ZRz2gKD94"
+      },
+      "deleteBoard": {
+        "handler": "src/endpoints/boardDelete.deleteBoard",
+        "events": [
           {
-            "https": {
-              "path": "board",
-              "method": "post",
-              "cors": true
+            "http": {
+              "path": "board/{id}",
+              "method": "delete",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "DELETE"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "db-service-production-create",
+        "name": "db-service-production-deleteBoard",
         "package": {
-          "artifact": ".serverless/create.zip"
+          "artifact": ".serverless/deleteBoard.zip"
         },
         "memory": 1024,
+        "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionCJ6bU7GVr4jzMDEH3CyKYPdq52sgRA4UIowcb8yoyI"
+        "versionLogicalId": "DeleteBoardLambdaVersionexyE52oUNRhJUZYq0tkcvf2m7xXPJnMP5PKunxKa7RI"
+      },
+      "readBoard": {
+        "handler": "src/endpoints/boardRead.readBoard",
+        "events": [
+          {
+            "http": {
+              "path": "board/{id}",
+              "method": "get",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "db-service-production-readBoard",
+        "package": {
+          "artifact": ".serverless/readBoard.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "ReadBoardLambdaVersionLx3h1q0KaoW7YbdiNSaHprF1Lo6XMFO9kE7IFExU89I"
+      },
+      "updateBoard": {
+        "handler": "src/endpoints/boardUpdate.updateBoard",
+        "events": [
+          {
+            "http": {
+              "path": "board/{id}",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "db-service-production-updateBoard",
+        "package": {
+          "artifact": ".serverless/updateBoard.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "UpdateBoardLambdaVersionlPj74AXYasp4W2dXKfNXyUprKizYAPb5AcsIC3YJQ"
+      },
+      "scrap": {
+        "handler": "src/endpoints/scrap.scrap",
+        "events": [
+          {
+            "http": {
+              "path": "board/{id}/scrap",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "db-service-production-scrap",
+        "package": {
+          "artifact": ".serverless/scrap.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "ScrapLambdaVersion8f7xJy2pQ0BTZMSsQg6mDY6L4yo4qMhGn7haZ2bPU8"
       }
     },
     "resources": {
@@ -669,7 +1502,7 @@
       },
       "package": {
         "individually": true,
-        "artifactDirectoryName": "serverless/db-service/production/1636172664205-2021-11-06T04:24:24.205Z"
+        "artifactDirectoryName": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z"
       },
       "custom": {
         "$ref": "$[\"service\"][\"custom\"]"
@@ -689,7 +1522,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/db-service/production/1636172664205-2021-11-06T04:24:24.205Z",
+    "artifactDirectoryName": "serverless/db-service/production/1641186488694-2022-01-03T05:08:08.694Z",
     "artifact": ""
   }
 }

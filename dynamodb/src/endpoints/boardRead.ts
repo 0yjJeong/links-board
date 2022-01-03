@@ -3,6 +3,7 @@ import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { TableName } from '../common/config';
 import dynamoClient from '../common/dynamoClient';
 import lambda from '../common/lambda';
+import { headers } from '../common/headers';
 
 const readBoardHandler = async (event) => {
   if (event.pathParameters.id) {
@@ -34,12 +35,14 @@ const readBoardHandler = async (event) => {
       const response = {
         body: JSON.stringify(data),
         statusCode: 200,
+        headers,
       };
       return { response, error: null };
     } catch (error) {
       const response = {
         body: JSON.stringify(error),
         statusCode: 500,
+        headers,
       };
       return { response, error };
     }
@@ -49,6 +52,7 @@ const readBoardHandler = async (event) => {
         message: 'Missing the id from the path',
       }),
       statusCode: 400,
+      headers,
     };
     return { response, error: null };
   }

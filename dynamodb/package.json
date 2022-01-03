@@ -12,7 +12,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.85",
     "@types/node": "^16.11.6",
-    "serverless": "^2.64.1",
+    "serverless": "^2.70.0",
     "serverless-dotenv-plugin": "^3.10.0",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.2.0",

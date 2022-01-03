@@ -4,6 +4,7 @@ import dynamoClient from '../common/dynamoClient';
 import lambda from '../common/lambda';
 import bodyParser from '../common/bodyParser';
 import { TableName } from '../common/config';
+import { headers } from '../common/headers';
 
 const scrapHandler = async (event) => {
   const body = bodyParser(event);
@@ -31,12 +32,14 @@ const scrapHandler = async (event) => {
           image: metadata.image,
         }),
         statusCode: 200,
+        headers,
       };
       return { response, error: null };
     } catch (error) {
       const response = {
         body: JSON.stringify(error),
         statusCode: 500,
+        headers,
       };
       return { response, error };
     }
@@ -47,6 +50,7 @@ const scrapHandler = async (event) => {
         message: 'Bad input data or missing text',
       }),
       statusCode: 422,
+      headers,
     };
     return { response, error: null };
   }
