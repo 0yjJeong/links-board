@@ -10,12 +10,13 @@ export const ToastDefault = styled.div`
   font-size: ${(p) => p.theme.font['body2'].size}px;
   background: ${(p) => p.theme.palette['grey5']};
   color: ${(p) => p.theme.palette['grey0']};
-  padding-top: ${(p) => p.theme.spacing['large']}px;
-  padding-bottom: ${(p) => p.theme.spacing['large']}px;
-  padding-left: ${(p) => p.theme.spacing['large']}px;
+  padding-top: ${(p) => p.theme.spacing['normal']}px;
+  padding-bottom: ${(p) => p.theme.spacing['normal']}px;
+  padding-left: ${(p) => p.theme.spacing['normal']}px;
   padding-right: ${(p) => p.theme.spacing['normal']}px;
   border-radius: ${(p) => p.theme.radii['small']}px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  z-index: 100;
 `;

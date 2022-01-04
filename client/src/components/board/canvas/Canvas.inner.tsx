@@ -12,5 +12,5 @@ export const CanvasInner = styled.div`
   overflow-y: hidden;
   padding-right: ${(p) => p.theme.spacing['large']}px;
   padding-left: ${(p) => p.theme.spacing['medium']}px;
-  padding-bottom: ${(p) => p.theme.spacing['large']}px;
+  padding-bottom: ${(p) => p.theme.spacing['medium']}px;
 `;

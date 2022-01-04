@@ -37,3 +37,22 @@
   align-items: center;
   color: #a4a4a4;
 }
+
+.column__footer {
+  width: 100%;
+  background: #fff;
+  border-radius: '4px';
+  margin: 'auto';
+}
+
+.column__footer-scrap {
+  margin-right: 4px;
+  font-size: 11px;
+  padding: 4px;
+  border-radius: 4px;
+  color: #a4a4a4;
+}
+
+.column__footer-scrap:hover {
+  background: #f3f3f3;
+}

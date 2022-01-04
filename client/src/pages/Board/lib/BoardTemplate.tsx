@@ -1,20 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { BiLink, BiUnlink } from 'react-icons/bi';
+import { Link, useNavigate } from 'react-router-dom';
+import { AiFillHome } from 'react-icons/ai';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
 import { Canvas, Column, Stack, Input, Button } from '../../../components';
 import { Card, Dragged, Element, List, TitleProps } from '../../../types';
 import { safe } from '../../../utils';
 import { deleteBoard } from '../../../lib/api';
-
-const Wrapper = styled(Stack)`
-  background: ${(p) => p.theme.palette['grey0']};
-  display: flex;
-  flex-direction: column;
-`;
 
 const Header = styled(Stack)`
   height: 3.4rem;
@@ -31,7 +25,6 @@ export interface BoardTemplateProps {
   onEditTitle?: (payload: TitleProps) => void;
   onDragHappened?: (payload: Dragged) => Promise<void>;
   onDeleteElement?: (payload: Element) => Promise<void>;
-  onCopyLink?: () => void;
   onScrap?: (payload: Omit<Card, 'data'>) => Promise<void>;
 }
 
@@ -44,7 +37,6 @@ export const BoardTemplate = ({
   onDragHappened = async () => {},
   onEditTitle = () => {},
   onDeleteElement = async () => {},
-  onCopyLink = () => {},
   onScrap = async () => {},
 }: BoardTemplateProps) => {
   const navigate = useNavigate();
@@ -68,21 +60,15 @@ export const BoardTemplate = ({
 
   return (
     <>
-      <Header axis='column' spacing='medium' gap='small'>
+      <Header axis='column' spacing='medium' gap='normal'>
         <Stack justify='space-between'>
           <Stack>
-            <Button themeName='outline' onClick={onCopyLink}>
-              {code ? (
-                <>
-                  <BiLink />
-                  {code}
-                </>
-              ) : (
-                <>
-                  <BiUnlink />
-                </>
-              )}
-            </Button>
+            <Link to='/' style={{ textDecoration: 'none' }}>
+              <Button themeName='outline'>
+                <AiFillHome />
+                Home
+              </Button>
+            </Link>
           </Stack>
           <Stack gap='small'>
             <Button themeName='fill' onClick={handleCreateBoard}>

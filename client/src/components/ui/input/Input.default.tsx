@@ -15,6 +15,7 @@ export const InputDefault = styled.input<InputDefaultProps>`
   font-size: ${(p) => p.theme.font[p.font].size}px;
   color: ${(p) => p.theme.palette[p.color]};
   font-weight: ${(p) => p.theme.font[p.font].weight};
+  min-height: 24px;
 
   &::placeholder {
     color: ${(p) => p.theme.palette[p.placeholderColor]};

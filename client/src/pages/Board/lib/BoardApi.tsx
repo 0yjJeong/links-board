@@ -16,7 +16,6 @@ export const BoardAPI: FC = ({ children }) => {
     const init = async () => {
       if (code) {
         const board = localStorage.getItem('board');
-
         if (!board) {
           try {
             const res = await readBoard(code);

@@ -3,7 +3,6 @@ import ButtonDefault, { ButtonDefaultProps } from './Button.default';
 
 const ButtonStretchDefault = styled(ButtonDefault)`
   width: 100%;
-  padding: 8px;
 `;
 
 const ButtonStretch = ({

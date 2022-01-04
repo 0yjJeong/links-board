@@ -7,8 +7,6 @@ import { setToast } from '../../store/base';
 
 const BaseDefault = styled(Stack)`
   background: ${(p) => p.theme.palette['grey0']};
-  display: flex;
-  flex-direction: column;
 `;
 
 const BaseWrapper: FC = ({ children }) => {
@@ -16,7 +14,7 @@ const BaseWrapper: FC = ({ children }) => {
   const toast = useSelector((state: RootState) => state.base.toast);
 
   return (
-    <BaseDefault>
+    <BaseDefault axis='column' gap='medium'>
       <Toast
         text={toast}
         millisecond={1500}

@@ -145,13 +145,6 @@ export const BoardPageSaved = ({
     [code, prevLists, prevCards, dragHappened, setToast]
   );
 
-  const onCopyLink = useCallback(() => {
-    if (code) {
-      navigator.clipboard.writeText(code);
-      setToast('Copied to clipboard');
-    }
-  }, [code, setToast]);
-
   const onScrap = useCallback(
     async (body: any) => {
       if (code) {
@@ -178,7 +171,6 @@ export const BoardPageSaved = ({
         onInputBlurred={onInputBlurred}
         onDragHappened={onDragHappened}
         onDeleteElement={onDeleteElement}
-        onCopyLink={onCopyLink}
         onScrap={onScrap}
       />
     </BoardAPI>

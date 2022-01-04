@@ -1,6 +1,5 @@
 import { Draggable } from 'react-beautiful-dnd';
 import { BiTrash } from 'react-icons/bi';
-import { HiOutlineExternalLink } from 'react-icons/hi';
 import {
   Image,
   Text,
@@ -33,15 +32,9 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
           {...provided.draggableProps}
         >
           <CardInnerDefault>
-            <Stack gap='large' spacing='normal'>
-              <Text font='body2' color='grey4' justify='start'>
+            <Stack spacing='normal'>
+              <Text font='body2' color='grey5' justify='start'>
                 <Link href={card.url} target='_blank' rel='noreferrer'>
-                  <HiOutlineExternalLink
-                    style={{
-                      marginBottom: '-2px',
-                      paddingRight: '2px',
-                    }}
-                  />
                   {card.url}
                 </Link>
               </Text>

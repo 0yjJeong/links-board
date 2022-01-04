@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Palette, Font, Spacing } from '../../../constants/theme';
+import { safe } from '../../../utils';
 
 export type ButtonStyle = {
   font: keyof Font;
@@ -25,11 +26,11 @@ export const buttonThemeMap: { [key in ButtonTheme]: ButtonStyle } = {
     background: 'grey2',
   },
   outline: {
-    color: 'grey5',
+    color: 'blue0',
     font: 'subtitle',
-    border: 'grey3',
+    border: 'blue1',
     background: null,
-    hoverd: 'grey1',
+    hoverd: null,
   },
   transperent1: {
     color: 'grey4',
