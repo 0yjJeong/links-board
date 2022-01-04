@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
 import short from 'short-uuid';
+import { DotLoader } from 'react-spinners';
+import { useParams } from 'react-router';
 import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
-import { useParams } from 'react-router';
 import { isCard } from '../../../utils/board';
 
 export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
@@ -15,6 +16,7 @@ const Body = styled.div`
   overflow-y: auto;
   padding-left: ${(p) => p.theme.spacing['normal']}px;
   padding-right: ${(p) => p.theme.spacing['normal']}px;
+  min-height: 20px;
 `;
 
 const ColumnInnerDefault = ({
@@ -29,6 +31,7 @@ const ColumnInnerDefault = ({
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [adding, setAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (adding) {
@@ -64,6 +67,8 @@ const ColumnInnerDefault = ({
             url,
           };
 
+          setLoading(true);
+
           const res = await onScrap(body);
 
           const payload = {
@@ -76,6 +81,7 @@ const ColumnInnerDefault = ({
           }
 
           setAdding(false);
+          setLoading(false);
         } catch (err) {
           console.error(err);
         }
@@ -106,7 +112,7 @@ const ColumnInnerDefault = ({
           onChange={handleEditTitle}
           onBlur={onInputBlurred}
         />
-        <Button style={{ height: '21.33px' }}>
+        <Button>
           <HiMinus onClick={handleDeleteColumn} />
         </Button>
       </Stack>
@@ -125,33 +131,30 @@ const ColumnInnerDefault = ({
           </Body>
         )}
       </Droppable>
-      <Stack spacing='normal'>
-        {adding ? (
-          <div
-            style={{
-              width: '100%',
-              background: '#fff',
-              borderRadius: '4px',
-              margin: 'auto',
-            }}
-          >
-            <Stack spacing='small'>
+      <Stack spacing='normal' justify='center'>
+        {loading ? (
+          <Stack spacing='small'>
+            <DotLoader color={'#F3F3F3'} loading={loading} size={18} />
+          </Stack>
+        ) : adding ? (
+          <div className='column__footer'>
+            <Stack align='center'>
               <Input
                 color='grey5'
                 placeholderColor='grey3'
-                font='title2'
+                font='subtitle'
                 placeholder='http://'
                 ref={inputRef}
               />
-              <Button themeName='transperent1' onClick={handleScrap}>
+              <span onClick={handleScrap} className='column__footer-scrap'>
                 ADD
-              </Button>
+              </span>
             </Stack>
           </div>
         ) : (
           <ButtonStretch onClick={() => setAdding(true)}>
             <IoMdAdd />
-            <span>ADD CARD</span>
+            <span>ADD LINK</span>
           </ButtonStretch>
         )}
       </Stack>
