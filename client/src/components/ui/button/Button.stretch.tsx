@@ -5,11 +5,8 @@ const ButtonStretchDefault = styled(ButtonDefault)`
   width: 100%;
 `;
 
-const ButtonStretch = ({
-  themeName = 'transperent1',
-  ...rest
-}: ButtonDefaultProps) => {
-  return <ButtonStretchDefault {...rest} themeName={themeName} />;
+const ButtonStretch = (props: ButtonDefaultProps) => {
+  return <ButtonStretchDefault series='tertiary' {...props} />;
 };
 
 export default ButtonStretch;

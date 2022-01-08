@@ -2,8 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { AiFillHome } from 'react-icons/ai';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
+import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
 import { Canvas, Column, Stack, Input, Button } from '../../../components';
 import { Card, Dragged, Element, List, TitleProps } from '../../../types';
@@ -64,18 +64,17 @@ export const BoardTemplate = ({
         <Stack justify='space-between'>
           <Stack>
             <Link to='/' style={{ textDecoration: 'none' }}>
-              <Button themeName='outline'>
-                <AiFillHome />
-                Home
+              <Button series='tertiary'>
+                <IoIosArrowBack />
               </Button>
             </Link>
           </Stack>
           <Stack gap='small'>
-            <Button themeName='fill' onClick={handleCreateBoard}>
+            <Button onClick={handleCreateBoard}>
               <HiOutlineDocumentAdd />
               New
             </Button>
-            <Button themeName='fill' onClick={handleDeleteBoard}>
+            <Button onClick={handleDeleteBoard}>
               <MdDelete />
               Delete
             </Button>

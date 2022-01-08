@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Palette, Font, Spacing } from '../../../constants/theme';
-import { safe } from '../../../utils';
 
 export type ButtonStyle = {
   font: keyof Font;
@@ -10,55 +9,37 @@ export type ButtonStyle = {
   hoverd: keyof Palette | null;
 };
 
-type ButtonTheme =
-  | 'fill'
-  | 'transperent1'
-  | 'transperent2'
-  | 'outline'
-  | 'main';
+type ButtonSeries = 'primary' | 'secondary' | 'tertiary';
 
-export const buttonThemeMap: { [key in ButtonTheme]: ButtonStyle } = {
-  fill: {
+export const buttonSeriesMap: { [key in ButtonSeries]: ButtonStyle } = {
+  primary: {
     color: 'grey4',
     font: 'subtitle',
     hoverd: 'grey3',
     border: null,
     background: 'grey2',
   },
-  outline: {
-    color: 'blue0',
+  secondary: {
+    color: 'grey4',
     font: 'subtitle',
-    border: 'blue1',
+    hoverd: 'grey1',
+    border: 'grey1',
     background: null,
-    hoverd: null,
   },
-  transperent1: {
+  tertiary: {
     color: 'grey4',
     font: 'subtitle',
     hoverd: 'grey2',
     border: null,
     background: null,
   },
-  transperent2: {
-    color: 'grey4',
-    font: 'subtitle',
-    hoverd: null,
-    border: null,
-    background: null,
-  },
-  main: {
-    color: 'grey0',
-    font: 'title2',
-    hoverd: 'blue3',
-    border: null,
-    background: 'blue2',
-  },
 };
 
 export interface ButtonDefaultProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  themeName?: ButtonTheme;
+  series?: ButtonSeries;
   spacing?: keyof Spacing;
+  colorTheme?: keyof Palette;
 }
 
 const ButtonDefault = styled.button<ButtonDefaultProps>`
@@ -72,31 +53,29 @@ const ButtonDefault = styled.button<ButtonDefaultProps>`
   padding: ${(p) => p.theme.spacing[p.spacing || 'small']}px;
 
   ${(p) => {
-    const buttonTheme = p.themeName
-      ? buttonThemeMap[p.themeName]
-      : buttonThemeMap['fill'];
+    const buttonSeries = buttonSeriesMap[p.series || 'primary'];
 
     let buttonCSS = `
-    color: ${p.theme.palette[buttonTheme.color]};
-    font-size: ${p.theme.font[buttonTheme.font].size}px;
-    font-weight: ${p.theme.font[buttonTheme.font].weight};
+    color: ${p.theme.palette[buttonSeries.color]};
+    font-size: ${p.theme.font[buttonSeries.font].size}px;
+    font-weight: ${p.theme.font[buttonSeries.font].weight};
     `;
 
-    buttonTheme.hoverd &&
+    buttonSeries.hoverd &&
       (buttonCSS += `
     &:hover {
-      background: ${p.theme.palette[buttonTheme.hoverd]};
+      background: ${p.theme.palette[buttonSeries.hoverd]};
     }
   `);
 
-    buttonTheme.background &&
+    buttonSeries.background &&
       (buttonCSS += `
-    background: ${p.theme.palette[buttonTheme.background]};
+    background: ${p.theme.palette[buttonSeries.background]};
     `);
 
-    buttonTheme.border &&
+    buttonSeries.border &&
       (buttonCSS += `
-    border: 1px solid ${p.theme.palette[buttonTheme.border]};
+    border: 1px solid ${p.theme.palette[buttonSeries.border]};
     `);
 
     return buttonCSS;

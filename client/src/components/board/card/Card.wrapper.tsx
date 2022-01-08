@@ -38,7 +38,7 @@ const CardWrapper = ({ card, index, onDeleteElement }: CardWrapperProps) => {
                   {card.url}
                 </Link>
               </Text>
-              <Button themeName='transperent1' onClick={handleDeleteCard}>
+              <Button series='secondary' onClick={handleDeleteCard}>
                 <BiTrash />
               </Button>
             </Stack>

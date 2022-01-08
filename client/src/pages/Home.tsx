@@ -30,9 +30,7 @@ export const HomePage = () => {
         </div>
       </div>
       <Link to='/board' style={{ textDecoration: 'none' }}>
-        <Button themeName='main' spacing='medium'>
-          Create new board
-        </Button>
+        <Button spacing='medium'>Create new board</Button>
       </Link>
     </Stack>
   );

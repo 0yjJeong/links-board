@@ -35,7 +35,7 @@ const ToastWrapper = ({ millisecond, text, onTimeout }: ToastWrapperProps) => {
   return (
     <ToastDefault>
       {text}
-      <Button themeName='transperent2' onClick={handleTimeout}>
+      <Button series='tertiary' onClick={handleTimeout}>
         <IoIosClose />
       </Button>
     </ToastDefault>
