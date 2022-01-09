@@ -5,10 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
-import { Canvas, Column, Stack, Input, Button } from '../../../components';
-import { Card, Dragged, Element, List, TitleProps } from '../../../types';
-import { safe } from '../../../utils';
-import { deleteBoard } from '../../../lib/api';
+import { Canvas, Column, Stack, Input, Button } from '..';
+import { Card, Dragged, Element, List, TitleProps } from '../../types';
+import { safe } from '../../utils';
+import { deleteBoard } from '../../lib/api';
 
 const Header = styled(Stack)`
   height: 3.4rem;

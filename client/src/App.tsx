@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle, Base } from './components';
 import theme from './constants/theme';
-import { BoardPage, BoardPageSaved, BoardPageWrapper, HomePage } from './pages';
+import { BoardPage, BoardPageSaved, HomePage } from './pages';
+import { BoardPageWrapper } from './hoc';
+
 import './App.css';
 
 function App() {

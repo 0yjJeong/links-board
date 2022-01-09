@@ -1,9 +1,18 @@
-import { useCallback, useMemo, ChangeEvent } from 'react';
-import { useParams } from 'react-router';
-import { BoardAPI, BoardProps, BoardTemplate } from '..';
-import { Card, Dragged, Element, TitleProps } from '../../types';
-import { updateBoard, scrapUrl } from '../../lib/api';
+import { useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Card,
+  Dragged,
+  Element,
+  TitleProps,
+  InitialBoard,
+  BoardProps,
+} from '../../types';
+import { updateBoard, scrapUrl, readBoard } from '../../lib/api';
 import { getElementKey, updateCards, updateLists } from '../../utils/board';
+import { BoardTemplate } from '../../components';
+import { setBoard } from '../../store/board/actions';
 
 export const BoardPageSaved = ({
   title,
@@ -15,6 +24,42 @@ export const BoardPageSaved = ({
   setToast,
 }: BoardProps) => {
   const { code } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      if (code) {
+        const board = localStorage.getItem('board');
+        if (!board) {
+          try {
+            const res = await readBoard(code);
+            dispatch(setBoard(res.Item));
+          } catch (err) {
+            navigate('/board', { replace: true });
+          }
+        } else {
+          dispatch(setBoard(JSON.parse(board) as InitialBoard));
+          localStorage.removeItem('board');
+        }
+      }
+
+      setLoading(false);
+    };
+    init();
+
+    return () => {
+      dispatch(
+        setBoard({
+          id: '',
+          title: '',
+          elements: [],
+        })
+      );
+    };
+  }, [navigate, code, dispatch]);
 
   const groupedCardsMap = useMemo(
     () =>
@@ -160,19 +205,19 @@ export const BoardPageSaved = ({
     [code, setToast]
   );
 
+  if (loading) return null;
+
   return (
-    <BoardAPI>
-      <BoardTemplate
-        title={title}
-        lists={prevLists}
-        groupedCardsMap={groupedCardsMap}
-        onAddElement={onAddElement}
-        onEditTitle={onEditTitle}
-        onInputBlurred={onInputBlurred}
-        onDragHappened={onDragHappened}
-        onDeleteElement={onDeleteElement}
-        onScrap={onScrap}
-      />
-    </BoardAPI>
+    <BoardTemplate
+      title={title}
+      lists={prevLists}
+      groupedCardsMap={groupedCardsMap}
+      onAddElement={onAddElement}
+      onEditTitle={onEditTitle}
+      onInputBlurred={onInputBlurred}
+      onDragHappened={onDragHappened}
+      onDeleteElement={onDeleteElement}
+      onScrap={onScrap}
+    />
   );
 };

@@ -5,21 +5,10 @@ import {
   updateElements,
   editTitle,
   dragHappened,
-} from '../../../store/board/actions';
-import { Element, TitleProps, List, Card } from '../../../types';
-import { RootState } from '../../../store';
-import { setSyntheticTrailingComments } from 'typescript';
-import { setToast } from '../../../store/base';
-
-export type BoardProps = {
-  title: string;
-  lists: List[];
-  cards: Card[];
-  updateElements: (payload: Element[]) => void;
-  editTitle: (payload: TitleProps) => void;
-  dragHappened: (payload: Element[]) => void;
-  setToast: (text: string) => void;
-};
+} from '../store/board/actions';
+import { Element, TitleProps, BoardProps } from '../types';
+import { RootState } from '../store';
+import { setToast } from '../store/base';
 
 interface WrapperProps extends BoardProps {
   Component: React.FunctionComponent<BoardProps>;

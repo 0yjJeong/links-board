@@ -2,11 +2,11 @@ import { useCallback, ChangeEvent } from 'react';
 import short from 'short-uuid';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoardTemplate } from '..';
 import { createBoard } from '../../lib/api';
 import { TitleProps } from '../../types';
 import { editTitle } from '../../store/board/actions';
 import { RootState } from '../../store';
+import { BoardTemplate } from '../../components';
 
 export const BoardPage = () => {
   const navigate = useNavigate();

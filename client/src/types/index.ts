@@ -44,3 +44,13 @@ export interface TitleProps {
   title: string;
   id?: string;
 }
+
+export type BoardProps = {
+  title: string;
+  lists: List[];
+  cards: Card[];
+  updateElements: (payload: Element[]) => void;
+  editTitle: (payload: TitleProps) => void;
+  dragHappened: (payload: Element[]) => void;
+  setToast: (text: string) => void;
+};
