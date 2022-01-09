@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
-import { Canvas, Column, Stack, Input, Button } from '..';
+import { Canvas, Column, Stack, Input, Button, Base } from '..';
 import { Card, Dragged, Element, List, TitleProps } from '../../types';
 import { safe } from '../../utils';
 import { deleteBoard } from '../../lib/api';
@@ -59,7 +59,7 @@ export const BoardTemplate = ({
   }, [code, navigate]);
 
   return (
-    <>
+    <Base>
       <Header axis='column' spacing='medium' gap='normal'>
         <Stack justify='space-between'>
           <Stack>
@@ -114,6 +114,6 @@ export const BoardTemplate = ({
           ))}
         </>
       </Canvas>
-    </>
+    </Base>
   );
 };
