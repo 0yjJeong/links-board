@@ -9,6 +9,7 @@ import { useParams } from 'react-router';
 import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
 import { isCard } from '../../../utils/board';
+import theme from '../../../constants/theme';
 
 export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
 
@@ -134,10 +135,14 @@ const ColumnInnerDefault = ({
       <Stack spacing='normal' justify='center'>
         {loading ? (
           <Stack spacing='small'>
-            <DotLoader color={'#F3F3F3'} loading={loading} size={18} />
+            <DotLoader
+              color={theme.palette.grey3}
+              loading={loading}
+              size={18}
+            />
           </Stack>
         ) : adding ? (
-          <div className='column__footer'>
+          <div style={{ background: '#fff', width: '100%' }}>
             <Stack align='center'>
               <Input
                 color='grey5'
@@ -146,9 +151,13 @@ const ColumnInnerDefault = ({
                 placeholder='http://'
                 ref={inputRef}
               />
-              <span onClick={handleScrap} className='column__footer-scrap'>
+              <Button
+                series='tertiary'
+                style={{ fontSize: '0.4rem', marginRight: '4px' }}
+                onClick={handleScrap}
+              >
                 ADD
-              </span>
+              </Button>
             </Stack>
           </div>
         ) : (
