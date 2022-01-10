@@ -13,6 +13,7 @@ const LinkDefault = styled.a<LinkDefaultProps>`
   text-overflow: ellipsis;
   position: absolute;
   width: inherit;
+  line-height: initial;
 `;
 
 export default LinkDefault;
