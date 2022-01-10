@@ -9,7 +9,7 @@ export type ButtonStyle = {
   hoverd: keyof Palette | null;
 };
 
-type ButtonSeries = 'primary' | 'secondary' | 'tertiary';
+type ButtonSeries = 'primary' | 'secondary' | 'tertiary' | 'quaternary';
 
 export const buttonSeriesMap: { [key in ButtonSeries]: ButtonStyle } = {
   primary: {
@@ -31,6 +31,13 @@ export const buttonSeriesMap: { [key in ButtonSeries]: ButtonStyle } = {
     font: 'subtitle',
     hoverd: 'grey2',
     border: null,
+    background: null,
+  },
+  quaternary: {
+    color: 'blue1',
+    font: 'subtitle',
+    hoverd: 'blue0',
+    border: 'blue1',
     background: null,
   },
 };
