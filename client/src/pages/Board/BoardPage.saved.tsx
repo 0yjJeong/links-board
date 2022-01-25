@@ -1,33 +1,32 @@
-import { useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import { useEffect, useCallback, useMemo, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Card,
-  Dragged,
-  Element,
-  TitleProps,
-  InitialBoard,
-  BoardProps,
-} from '../../types';
-import { updateBoard, scrapUrl, readBoard } from '../../lib/api';
+import { Card, Dragged, Element, InitialBoard, TitleProps } from '../../types';
 import { getElementKey, updateCards, updateLists } from '../../utils/board';
 import { BoardTemplate } from '../../components';
-import { setBoard } from '../../store/board/actions';
+import {
+  dragHappenedThunk,
+  readBoardThunk,
+  updateBoardThunk,
+} from '../../store/board/thunks';
+import { READ_BOARD_SUCCESS } from '../../store/board/types';
+import { editTitle } from '../../store/board/actions';
+import { WrapperProps } from '../../additional-components';
+import { State } from '../../store/board/reducer';
+
+export interface BoardPageSavedProps extends State {
+  editTitle: (payload: TitleProps) => void;
+}
 
 export const BoardPageSaved = ({
-  title,
-  lists: prevLists,
-  cards: prevCards,
-  updateElements,
-  editTitle,
-  dragHappened,
-  setToast,
-}: BoardProps) => {
+  data,
+  isLoading,
+  error,
+  status,
+}: Omit<WrapperProps, 'Component'>) => {
   const { code } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
@@ -35,77 +34,63 @@ export const BoardPageSaved = ({
         const board = localStorage.getItem('board');
         if (!board) {
           try {
-            const res = await readBoard(code);
-            dispatch(setBoard(res.Item));
+            dispatch(readBoardThunk(code));
           } catch (err) {
             navigate('/board', { replace: true });
           }
         } else {
-          dispatch(setBoard(JSON.parse(board) as InitialBoard));
+          dispatch({
+            type: READ_BOARD_SUCCESS,
+            payload: JSON.parse(board) as InitialBoard,
+          });
           localStorage.removeItem('board');
         }
       }
-
-      setLoading(false);
     };
     init();
 
     return () => {
-      dispatch(
-        setBoard({
-          id: '',
+      dispatch({
+        type: READ_BOARD_SUCCESS,
+        payload: {
+          id: null,
           title: '',
           elements: [],
-        })
-      );
+        },
+      });
     };
   }, [navigate, code, dispatch]);
-
-  const groupedCardsMap = useMemo(
-    () =>
-      prevCards.reduce((obj, c) => {
-        try {
-          obj[c.attachedTo].push(c);
-        } catch (err) {
-          obj[c.attachedTo] = [c];
-        }
-        return obj;
-      }, {} as { [key: string]: Card[] }),
-    [prevCards]
-  );
 
   const onAddElement = useCallback(
     async (payload: Element) => {
       if (code) {
-        try {
+        if (data) {
           const key = getElementKey(payload);
 
-          let arr =
-            key === 'lists' ? [prevLists, prevCards] : [prevCards, prevLists];
+          const arr =
+            key === 'lists'
+              ? [data.lists, data.cards]
+              : [data.cards, data.lists];
 
-          let nextElements = [...arr[0], payload];
+          const nextElements = [...arr[0], payload];
 
-          await updateBoard(code, {
-            elements: [...arr[1], ...nextElements],
-          });
-
-          updateElements(nextElements);
-        } catch (err) {
-          setToast('Failed to save item. Please try again.');
+          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
         }
       }
     },
-    [code, prevLists, prevCards, updateElements, setToast]
+    [code, data, dispatch]
   );
 
   const onDeleteElement = useCallback(
     async (payload: Element) => {
       if (code) {
-        try {
+        if (data) {
           const key = getElementKey(payload);
 
-          let arr =
-            key === 'lists' ? [prevLists, prevCards] : [prevCards, prevLists];
+          const arr =
+            key === 'lists'
+              ? [data.lists, data.cards]
+              : [data.cards, data.lists];
 
           const index = arr[0].findIndex(
             (element) => element.id === payload.id
@@ -116,108 +101,91 @@ export const BoardPageSaved = ({
             ...arr[0].slice(index + 1),
           ];
 
-          updateElements(nextElements);
-
-          await updateBoard(code, {
-            elements: [...arr[1], ...nextElements],
-          });
-        } catch (err) {
-          setToast('Failed to delete item. Please try again.');
+          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
         }
       }
     },
-    [code, prevLists, prevCards, updateElements, setToast]
-  );
-
-  const onEditTitle = useCallback(
-    (payload: TitleProps) => editTitle(payload),
-    [editTitle]
+    [code, data, dispatch]
   );
 
   const onInputBlurred = useCallback(
     async (payload: ChangeEvent<HTMLInputElement>) => {
       if (code) {
-        try {
-          let body = {};
-
-          payload.target.name === 'title'
-            ? (body = {
-                title: payload.target.value,
-              })
-            : (body = {
-                elements: [...prevCards, ...prevLists],
-              });
-
-          await updateBoard(code, body);
-        } catch (err) {
-          setToast('Failed to save input. Please try again.');
+        if (data) {
+          if (payload.target.name === 'title') {
+            dispatch(updateBoardThunk(code, payload.target.value));
+          } else {
+            dispatch(updateBoardThunk(code, [[], data.lists, data.cards]));
+          }
         }
       }
     },
-    [code, prevCards, prevLists, setToast]
+    [code, data, dispatch]
   );
 
   const onDragHappened = useCallback(
     async (payload: Dragged) => {
       if (code) {
-        try {
-          let elements: Element[] = [];
+        if (data) {
           const { type, elementId, startIndex, endId, endIndex } = payload;
 
+          let arr =
+            type === 'lists'
+              ? [data.lists, data.cards]
+              : [data.cards, data.lists];
+
           if (type === 'list') {
-            elements = updateLists(prevLists, startIndex, endIndex);
+            arr[0] = updateLists(data.lists, startIndex, endIndex);
           } else if (type === 'card') {
-            elements = updateCards(prevCards, elementId, endId, endIndex);
+            arr[0] = updateCards(data.cards, elementId, endId, endIndex);
           }
 
-          if (elements.length) {
-            dragHappened(elements);
-          }
+          dispatch(dragHappenedThunk(code, arr));
 
-          const key = getElementKey(elements[0]);
+          // if (elements.length) {
+          //   dragHappened(elements);
+          // }
 
-          await updateBoard(code, {
-            elements:
-              key === 'lists'
-                ? [...prevCards, ...elements]
-                : [...prevLists, ...elements],
-          });
-        } catch (err) {
-          setToast('Failed to save board. Please try again.');
+          // const key = getElementKey(elements[0]);
+
+          // await updateBoard(code, {
+          //   elements:
+          //     key === 'lists'
+          //       ? [...prevCards, ...elements]
+          //       : [...prevLists, ...elements],
+          // });
         }
       }
     },
-    [code, prevLists, prevCards, dragHappened, setToast]
+    [code, data, dispatch]
   );
 
-  const onScrap = useCallback(
-    async (body: any) => {
-      if (code) {
-        try {
-          const res = await scrapUrl(code, body);
-          return res;
-        } catch (err) {
-          setToast('Failed to scrap url. Please try again.');
-          throw new Error('Internal Server Error');
-        }
-      }
+  const onEditTitle = useCallback(
+    (payload: TitleProps) => {
+      dispatch(editTitle(payload));
     },
-    [code, setToast]
+    [dispatch]
   );
 
-  if (loading) return null;
+  if (isLoading && status === 'READING') {
+    return null;
+  }
+  if (!data) {
+    return null;
+  }
+
+  const { title, lists, cards } = data;
 
   return (
     <BoardTemplate
       title={title}
-      lists={prevLists}
-      groupedCardsMap={groupedCardsMap}
+      lists={lists}
+      cards={cards}
       onAddElement={onAddElement}
       onEditTitle={onEditTitle}
       onInputBlurred={onInputBlurred}
       onDragHappened={onDragHappened}
       onDeleteElement={onDeleteElement}
-      onScrap={onScrap}
     />
   );
 };

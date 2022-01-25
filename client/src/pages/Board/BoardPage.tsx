@@ -12,7 +12,8 @@ export const BoardPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const title = useSelector((state: RootState) => state.board.title);
+  const title =
+    useSelector((state: RootState) => state.board.data?.title) || '';
 
   const onAddElement = useCallback(async () => {
     const body = {
@@ -59,7 +60,7 @@ export const BoardPage = () => {
     <BoardTemplate
       title={title}
       lists={[]}
-      groupedCardsMap={{}}
+      cards={[]}
       onAddElement={onAddElement}
       onEditTitle={onEditTitle}
       onInputBlurred={onInputBlurred}

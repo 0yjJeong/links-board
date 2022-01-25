@@ -17,7 +17,7 @@ const Header = styled(Stack)`
 export interface BoardTemplateProps {
   title: string;
   lists: List[];
-  groupedCardsMap: { [key: string]: Card[] };
+  cards: Card[];
   onAddElement: (payload: Element) => Promise<void>;
   onInputBlurred: (
     payload: React.ChangeEvent<HTMLInputElement>
@@ -31,7 +31,7 @@ export interface BoardTemplateProps {
 export const BoardTemplate = ({
   title,
   lists,
-  groupedCardsMap,
+  cards,
   onAddElement,
   onInputBlurred,
   onDragHappened = async () => {},
@@ -41,6 +41,21 @@ export const BoardTemplate = ({
 }: BoardTemplateProps) => {
   const navigate = useNavigate();
   const { code } = useParams();
+
+  const groupedCardsMap = React.useMemo(
+    () =>
+      (cards &&
+        cards.reduce((obj, card) => {
+          try {
+            obj[card.attachedTo].push(card);
+          } catch (err) {
+            obj[card.attachedTo] = [card];
+          }
+          return obj;
+        }, {} as { [key: string]: Card[] })) ||
+      {},
+    [cards]
+  );
 
   const handleCreateBoard = React.useCallback(
     () => navigate('/board', { replace: true }),

@@ -3,8 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from './components';
 import theme from './constants/theme';
 import { BoardPage, BoardPageSaved, HomePage } from './pages';
-import { BoardPageWrapper } from './hoc';
-
+import { Wrapper } from './additional-components';
 import './App.css';
 
 function App() {
@@ -17,7 +16,7 @@ function App() {
             <Route index element={<BoardPage />} />
             <Route
               path=':code'
-              element={<BoardPageWrapper Component={BoardPageSaved} />}
+              element={<Wrapper Component={BoardPageSaved} />}
             />
           </Route>
         </Routes>

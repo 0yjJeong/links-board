@@ -10,6 +10,8 @@ import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
 import { isCard } from '../../../utils/board';
 import theme from '../../../constants/theme';
+import { useDispatch } from 'react-redux';
+import { scrapThunk } from '../../../store/board/thunks';
 
 export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
 
@@ -31,61 +33,73 @@ const ColumnInnerDefault = ({
 }: ColumnInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
   const [adding, setAdding] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (adding) {
-      if (inputRef.current) {
-        inputRef.current.focus();
-        inputRef.current.addEventListener('blur', (e) => {
-          let element;
-          if (e.relatedTarget) {
-            (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
-              if (child.textContent === 'ADD') {
-                element = child;
-              }
-            });
-          }
+  // useEffect(() => {
+  //   if (adding) {
+  //     if (inputRef.current) {
+  //       inputRef.current.focus();
+  //       inputRef.current.addEventListener('blur', (e) => {
+  //         let element;
+  //         if (e.relatedTarget) {
+  //           (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
+  //             if (child.textContent === 'ADD') {
+  //               element = child;
+  //             }
+  //           });
+  //         }
 
-          if (!element) {
-            setAdding(false);
-          }
-        });
-      }
-    }
-  }, [adding]);
+  //         if (!element) {
+  //           setAdding(false);
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [adding]);
 
   const handleScrap = async () => {
     if (code) {
       if (inputRef.current) {
-        try {
-          const url = inputRef.current.value;
+        const url = inputRef.current.value;
 
-          const body = {
-            id: short().new(),
-            attachedTo: list.id,
-            url,
-          };
+        const body = {
+          id: short().new(),
+          attachedTo: list.id,
+          url,
+        };
 
-          setLoading(true);
+        setAdding(false);
 
-          const res = await onScrap(body);
+        dispatch(scrapThunk(code, body));
+        // try {
+        //   const url = inputRef.current.value;
 
-          const payload = {
-            ...body,
-            data: res as any,
-          };
+        //   const body = {
+        //     id: short().new(),
+        //     attachedTo: list.id,
+        //     url,
+        //   };
 
-          if (payload && isCard(payload)) {
-            onAddElement(payload);
-          }
+        //   setLoading(true);
 
-          setAdding(false);
-          setLoading(false);
-        } catch (err) {
-          console.error(err);
-        }
+        //   const res = await onScrap(body);
+
+        //   const payload = {
+        //     ...body,
+        //     data: res as any,
+        //   };
+
+        //   if (payload && isCard(payload)) {
+        //     onAddElement(payload);
+        //   }
+
+        //   setAdding(false);
+        //   setLoading(false);
+        // } catch (err) {
+        //   console.error(err);
+        // }
       }
     }
   };
@@ -133,15 +147,7 @@ const ColumnInnerDefault = ({
         )}
       </Droppable>
       <Stack spacing='normal' justify='center'>
-        {loading ? (
-          <Stack spacing='small'>
-            <DotLoader
-              color={theme.palette.grey3}
-              loading={loading}
-              size={18}
-            />
-          </Stack>
-        ) : adding ? (
+        {adding ? (
           <div style={{ background: '#fff', width: '100%' }}>
             <Stack align='center'>
               <Input

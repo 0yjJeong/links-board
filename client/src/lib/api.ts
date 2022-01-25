@@ -49,7 +49,14 @@ export const updateBoard = async (id: string, body: any) => {
   return res;
 };
 
-export const scrapUrl = async (id: string, body: any) => {
+export const scrapUrl = async (
+  id: string,
+  body: any
+): Promise<{
+  image: string | null;
+  title: string;
+  description: string;
+}> => {
   const response = await fetch(`${DB_ENDPOINT}/board/${id}/scrap`, {
     body: JSON.stringify(body),
     method: 'POST',
