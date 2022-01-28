@@ -8,8 +8,8 @@ import { Dragged, Element } from '../../../types';
 interface CanvasWrapperProps {
   ComponentOuter?: React.FunctionComponent;
   ComponentInner?: React.FunctionComponent;
-  onDragHappened: (payload: Dragged) => void;
   onAddElement: (element: Element) => void;
+  onDragHappened?: (dragged: Dragged) => void;
   children: React.ReactElement;
 }
 
@@ -25,14 +25,16 @@ const CanvasWrapper = ({
       return;
     }
 
-    onDragHappened({
-      elementId: result.draggableId,
-      startId: result.source.droppableId,
-      startIndex: result.source.index,
-      endId: result.destination?.droppableId,
-      endIndex: result.destination?.index,
-      type: result.type,
-    });
+    if (onDragHappened) {
+      onDragHappened({
+        elementId: result.draggableId,
+        startId: result.source.droppableId,
+        startIndex: result.source.index,
+        endId: result.destination?.droppableId,
+        endIndex: result.destination?.index,
+        type: result.type,
+      });
+    }
   };
 
   const handleAddList = () => {

@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from './components';
 import theme from './constants/theme';
-import { BoardPage, BoardPageSaved, HomePage } from './pages';
+import { BoardPageNew, BoardPageSaved, HomePage } from './pages';
 import { Wrapper } from './additional-components';
 import './App.css';
 
@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route index element={<HomePage />} />
           <Route path='board'>
-            <Route index element={<BoardPage />} />
+            <Route index element={<BoardPageNew />} />
             <Route
               path=':code'
               element={<Wrapper Component={BoardPageSaved} />}

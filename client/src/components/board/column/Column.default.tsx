@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import { ColumnInner } from '..';
-import { Card, Element, List, TitleProps } from '../../../types';
+import { Card, Element, List } from '../../../types';
 
 export const ColumnDefaultOuter = styled.div`
   width: 340px;
@@ -20,33 +20,33 @@ export interface ColumnDefaultProps {
   index: number;
   list: List;
   cards: Card[];
-  onEditTitle: (payload: TitleProps) => void;
+  isLoading: boolean;
+  onEditTitle: (title: string, id?: string) => void;
   onDeleteElement: (payload: Element) => void;
   onAddElement: (payload: Element) => void;
   onInputBlurred: (payload: React.ChangeEvent<HTMLInputElement>) => void;
-  onScrap: (payload: Omit<Card, 'data'>) => Promise<void>;
 }
 
 const ColumnDefault = ({
   index,
   list,
   cards,
+  isLoading,
   onEditTitle,
   onDeleteElement,
   onAddElement,
   onInputBlurred,
-  onScrap,
 }: ColumnDefaultProps) => {
   const children = (
     <ColumnInner
       index={index}
       list={list}
       cards={cards}
+      isLoading={isLoading}
       onEditTitle={onEditTitle}
       onDeleteElement={onDeleteElement}
       onAddElement={onAddElement}
       onInputBlurred={onInputBlurred}
-      onScrap={onScrap}
     />
   );
 

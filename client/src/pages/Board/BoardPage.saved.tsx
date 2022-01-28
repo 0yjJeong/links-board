@@ -1,18 +1,21 @@
-import { useEffect, useCallback, useMemo, ChangeEvent } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, Dragged, Element, InitialBoard, TitleProps } from '../../types';
-import { getElementKey, updateCards, updateLists } from '../../utils/board';
-import { BoardTemplate } from '../../components';
-import {
-  dragHappenedThunk,
-  readBoardThunk,
-  updateBoardThunk,
-} from '../../store/board/thunks';
-import { READ_BOARD_SUCCESS } from '../../store/board/types';
-import { editTitle } from '../../store/board/actions';
-import { WrapperProps } from '../../additional-components';
+import { readBoardThunk, updateBoardThunk } from '../../store/board/thunks';
+import { readBoardAsync } from '../../store/board/actions';
 import { State } from '../../store/board/reducer';
+import { getElementKey, updateLists, updateCards } from '../../utils/board';
+import { Base, Canvas, Column } from '../../components';
+import { BoardHeaderDefault as BoardHeader } from '../../components/board/header/Header.default';
+import { safe } from '../../utils';
+import {
+  InitialBoard,
+  TitleProps,
+  Element,
+  Dragged,
+  Card,
+  List,
+} from '../../types';
 
 export interface BoardPageSavedProps extends State {
   editTitle: (payload: TitleProps) => void;
@@ -22,27 +25,22 @@ export const BoardPageSaved = ({
   data,
   isLoading,
   error,
-  status,
-}: Omit<WrapperProps, 'Component'>) => {
+  editTitle,
+}: BoardPageSavedProps) => {
   const { code } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  React.useEffect(() => {
+    const { success: setBoard } = readBoardAsync;
+
     const init = async () => {
       if (code) {
         const board = localStorage.getItem('board');
         if (!board) {
-          try {
-            dispatch(readBoardThunk(code));
-          } catch (err) {
-            navigate('/board', { replace: true });
-          }
+          dispatch(readBoardThunk(code));
         } else {
-          dispatch({
-            type: READ_BOARD_SUCCESS,
-            payload: JSON.parse(board) as InitialBoard,
-          });
+          dispatch(setBoard(JSON.parse(board) as InitialBoard));
           localStorage.removeItem('board');
         }
       }
@@ -50,29 +48,43 @@ export const BoardPageSaved = ({
     init();
 
     return () => {
-      dispatch({
-        type: READ_BOARD_SUCCESS,
-        payload: {
-          id: null,
+      dispatch(
+        setBoard({
+          id: '',
           title: '',
           elements: [],
-        },
-      });
+        })
+      );
     };
   }, [navigate, code, dispatch]);
 
-  const onAddElement = useCallback(
-    async (payload: Element) => {
+  const groupedCardsMap = React.useMemo(
+    () =>
+      (data &&
+        data.cards.reduce((obj, card) => {
+          try {
+            obj[card.attachedTo].push(card);
+          } catch (err) {
+            obj[card.attachedTo] = [card];
+          }
+          return obj;
+        }, {} as { [key: string]: Card[] })) ||
+      {},
+    [data]
+  );
+
+  const onAddElement = React.useCallback(
+    (element: Element) => {
       if (code) {
         if (data) {
-          const key = getElementKey(payload);
+          const key = getElementKey(element);
 
           const arr =
             key === 'lists'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
 
-          const nextElements = [...arr[0], payload];
+          const nextElements = [...arr[0], element];
 
           dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
         }
@@ -81,20 +93,18 @@ export const BoardPageSaved = ({
     [code, data, dispatch]
   );
 
-  const onDeleteElement = useCallback(
-    async (payload: Element) => {
+  const onDeleteElement = React.useCallback(
+    (element: Element) => {
       if (code) {
         if (data) {
-          const key = getElementKey(payload);
+          const key = getElementKey(element);
 
           const arr =
             key === 'lists'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
 
-          const index = arr[0].findIndex(
-            (element) => element.id === payload.id
-          );
+          const index = arr[0].findIndex((el) => el.id === element.id);
 
           const nextElements = [
             ...arr[0].slice(0, index),
@@ -108,12 +118,12 @@ export const BoardPageSaved = ({
     [code, data, dispatch]
   );
 
-  const onInputBlurred = useCallback(
-    async (payload: ChangeEvent<HTMLInputElement>) => {
+  const onInputBlurred = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       if (code) {
         if (data) {
-          if (payload.target.name === 'title') {
-            dispatch(updateBoardThunk(code, payload.target.value));
+          if (event.target.name === 'title') {
+            dispatch(updateBoardThunk(code, event.target.value));
           } else {
             dispatch(updateBoardThunk(code, [[], data.lists, data.cards]));
           }
@@ -123,69 +133,65 @@ export const BoardPageSaved = ({
     [code, data, dispatch]
   );
 
-  const onDragHappened = useCallback(
-    async (payload: Dragged) => {
+  const onDragHappened = React.useCallback(
+    (dragged: Dragged) => {
       if (code) {
         if (data) {
-          const { type, elementId, startIndex, endId, endIndex } = payload;
+          const { type, elementId, startIndex, endId, endIndex } = dragged;
 
-          let arr =
-            type === 'lists'
+          const arr =
+            type === 'list'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
-
+          let nextElements: List[] | Card[] = [];
           if (type === 'list') {
-            arr[0] = updateLists(data.lists, startIndex, endIndex);
+            nextElements = updateLists(data.lists, startIndex, endIndex);
           } else if (type === 'card') {
-            arr[0] = updateCards(data.cards, elementId, endId, endIndex);
+            nextElements = updateCards(data.cards, elementId, endId, endIndex);
           }
-
-          dispatch(dragHappenedThunk(code, arr));
-
-          // if (elements.length) {
-          //   dragHappened(elements);
-          // }
-
-          // const key = getElementKey(elements[0]);
-
-          // await updateBoard(code, {
-          //   elements:
-          //     key === 'lists'
-          //       ? [...prevCards, ...elements]
-          //       : [...prevLists, ...elements],
-          // });
+          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
         }
       }
     },
     [code, data, dispatch]
   );
 
-  const onEditTitle = useCallback(
-    (payload: TitleProps) => {
-      dispatch(editTitle(payload));
+  const onEditTitle = React.useCallback(
+    (title: string, id?: string) => {
+      editTitle({ title, id });
     },
-    [dispatch]
+    [editTitle]
   );
 
-  if (isLoading && status === 'READING') {
+  if (isLoading || !data) {
     return null;
   }
-  if (!data) {
-    return null;
-  }
-
-  const { title, lists, cards } = data;
 
   return (
-    <BoardTemplate
-      title={title}
-      lists={lists}
-      cards={cards}
-      onAddElement={onAddElement}
-      onEditTitle={onEditTitle}
-      onInputBlurred={onInputBlurred}
-      onDragHappened={onDragHappened}
-      onDeleteElement={onDeleteElement}
-    />
+    <Base>
+      <BoardHeader
+        title={data.title}
+        onDeleteBoard={() => {}}
+        onInputBlurred={onInputBlurred}
+        onEditTitle={onEditTitle}
+      />
+      <Canvas onAddElement={onAddElement} onDragHappened={onDragHappened}>
+        <>
+          {data.lists.map((list, index) => (
+            <Column
+              key={list.id}
+              index={index}
+              list={list}
+              isLoading={isLoading}
+              cards={safe(() => groupedCardsMap[list.id], [])}
+              onEditTitle={onEditTitle}
+              onDeleteElement={onDeleteElement}
+              onAddElement={onAddElement}
+              onInputBlurred={onInputBlurred}
+            />
+          ))}
+        </>
+      </Canvas>
+    </Base>
   );
 };

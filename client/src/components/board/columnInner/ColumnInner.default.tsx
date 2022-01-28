@@ -3,12 +3,10 @@ import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
-import short from 'short-uuid';
 import { DotLoader } from 'react-spinners';
 import { useParams } from 'react-router';
 import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
-import { isCard } from '../../../utils/board';
 import theme from '../../../constants/theme';
 import { useDispatch } from 'react-redux';
 import { scrapThunk } from '../../../store/board/thunks';
@@ -27,79 +25,42 @@ const ColumnInnerDefault = ({
   cards = [],
   onEditTitle,
   onDeleteElement,
-  onAddElement,
   onInputBlurred,
-  onScrap,
 }: ColumnInnerDefaultProps) => {
   const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
   const [adding, setAdding] = useState(false);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   if (adding) {
-  //     if (inputRef.current) {
-  //       inputRef.current.focus();
-  //       inputRef.current.addEventListener('blur', (e) => {
-  //         let element;
-  //         if (e.relatedTarget) {
-  //           (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
-  //             if (child.textContent === 'ADD') {
-  //               element = child;
-  //             }
-  //           });
-  //         }
+  useEffect(() => {
+    if (adding) {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.addEventListener('blur', (e) => {
+          let element;
+          if (e.relatedTarget) {
+            (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
+              if (child.textContent === 'ADD') {
+                element = child;
+              }
+            });
+          }
 
-  //         if (!element) {
-  //           setAdding(false);
-  //         }
-  //       });
-  //     }
-  //   }
-  // }, [adding]);
+          if (!element) {
+            setAdding(false);
+          }
+        });
+      }
+    }
+  }, [adding]);
 
   const handleScrap = async () => {
     if (code) {
       if (inputRef.current) {
         const url = inputRef.current.value;
 
-        const body = {
-          id: short().new(),
-          attachedTo: list.id,
-          url,
-        };
-
-        setAdding(false);
-
-        dispatch(scrapThunk(code, body));
-        // try {
-        //   const url = inputRef.current.value;
-
-        //   const body = {
-        //     id: short().new(),
-        //     attachedTo: list.id,
-        //     url,
-        //   };
-
-        //   setLoading(true);
-
-        //   const res = await onScrap(body);
-
-        //   const payload = {
-        //     ...body,
-        //     data: res as any,
-        //   };
-
-        //   if (payload && isCard(payload)) {
-        //     onAddElement(payload);
-        //   }
-
-        //   setAdding(false);
-        //   setLoading(false);
-        // } catch (err) {
-        //   console.error(err);
-        // }
+        dispatch(scrapThunk(code, list.id, url, setLoading));
       }
     }
   };
@@ -109,10 +70,7 @@ const ColumnInnerDefault = ({
   };
 
   const handleEditTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onEditTitle({
-      id: list.id,
-      title: e.target.value,
-    });
+    onEditTitle(e.target.value, list.id);
   };
 
   return (
@@ -147,7 +105,9 @@ const ColumnInnerDefault = ({
         )}
       </Droppable>
       <Stack spacing='normal' justify='center'>
-        {adding ? (
+        {loading ? (
+          <DotLoader color={theme.palette.grey3} size={18} />
+        ) : adding ? (
           <div style={{ background: '#fff', width: '100%' }}>
             <Stack align='center'>
               <Input

@@ -13,7 +13,6 @@ export interface WrapperProps extends BoardPageSavedProps {
 const mapStateToProps = (state: RootState) => ({
   data: state.board.data,
   isLoading: state.board.isLoading,
-  status: state.board.status,
   error: state.board.error,
 });
 

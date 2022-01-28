@@ -1,1 +1,1 @@
-export { default as ColumnInner } from './Column.default';
+export { default as ColumnInner } from './ColumnInner.default';

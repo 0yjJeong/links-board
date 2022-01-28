@@ -1,2 +1,2 @@
-export * from './BoardPage';
+export * from './BoardPage.new';
 export * from './BoardPage.saved';
