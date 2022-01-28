@@ -1,14 +1,24 @@
 import { ThunkAction } from 'redux-thunk';
+import { NavigateFunction } from 'react-router-dom';
+import short from 'short-uuid';
 import { RootState } from '..';
-import { readBoard, scrapUrl, updateBoard } from '../../lib/api';
-import {
-  dragHappenedAsync,
-  readBoardAsync,
-  scrapAsync,
-  updateElementsAsync,
-} from './actions';
+import { createBoard, readBoard, scrapUrl, updateBoard } from '../../lib/api';
+import { readBoardAsync, scrap, updateElements } from './actions';
 import { BoardAction } from './types';
-import { Card, Element } from '../../types';
+import { Element, InitialBoard } from '../../types';
+
+export function createBoardThunk(
+  body: InitialBoard,
+  navigate: NavigateFunction
+): ThunkAction<void, RootState, null, BoardAction> {
+  return async () => {
+    try {
+      await createBoard(body);
+      localStorage.setItem('board', JSON.stringify(body));
+      navigate(`/board/${body.id}`, { replace: true });
+    } catch (err) {}
+  };
+}
 
 export function readBoardThunk(
   code: string
@@ -30,57 +40,40 @@ export function updateBoardThunk(
   body: string | Element[][]
 ): ThunkAction<void, RootState, null, BoardAction> {
   return async (dispatch) => {
-    const { request, success, failure } = updateElementsAsync;
-    dispatch(request());
     try {
       if (Array.isArray(body)) {
+        dispatch(updateElements([body[0], body[1]]));
         await updateBoard(code, { elements: [...body[1], ...body[2]] });
-        dispatch(success([body[0], body[1]]));
       } else {
+        dispatch(updateElements(body));
         await updateBoard(code, { title: body });
-        dispatch(success(body));
       }
-    } catch (err) {
-      dispatch(failure(err, {}));
-    }
-  };
-}
-
-export function dragHappenedThunk(
-  code: string,
-  body: Element[][]
-): ThunkAction<void, RootState, null, BoardAction> {
-  return async (dispatch) => {
-    const { request, success, failure } = dragHappenedAsync;
-    dispatch(request());
-    try {
-      await updateBoard(code, { elements: [...body[0], ...body[1]] });
-      dispatch(success(body[0]));
-    } catch (err) {
-      dispatch(failure(err, {}));
-    }
+    } catch (err) {}
   };
 }
 
 export function scrapThunk(
   code: string,
-  body: Omit<Card, 'data'>
+  listId: string,
+  url: string,
+  setLoading: (value: boolean) => void
 ): ThunkAction<void, RootState, null, BoardAction> {
   return async (dispatch) => {
-    const { request, success, failure } = scrapAsync;
-    dispatch(request());
     try {
-      const metadata = await scrapUrl(code, body);
-      dispatch(
-        success({
-          id: body.id,
-          url: body.url,
-          attachedTo: body.attachedTo,
-          data: metadata,
-        })
-      );
-    } catch (err) {
-      dispatch(failure(err, {}));
-    }
+      setLoading(true);
+
+      const metadata = await scrapUrl(code, { url });
+
+      const card = {
+        id: short().new(),
+        attachedTo: listId,
+        url,
+        data: metadata,
+      };
+
+      dispatch(scrap(card));
+
+      setLoading(false);
+    } catch (err) {}
   };
 }

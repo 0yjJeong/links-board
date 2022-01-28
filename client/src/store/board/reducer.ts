@@ -5,29 +5,20 @@ import {
   READ_BOARD_REQUESTED,
   READ_BOARD_SUCCESS,
   READ_BOARD_FAILURE,
-  UPDATE_ELEMENTS_REQUESTED,
-  UPDATE_ELEMENTS_SUCCESS,
-  UPDATE_ELEMENTS_FAILURE,
-  DRAG_HAPPENED_REQUESTED,
-  DRAG_HAPPENED_FAILURE,
-  DRAG_HAPPENED_SUCCESS,
-  SCRAP_REQUESTED,
-  SCRAP_FAILURE,
-  SCRAP_SUCCESS,
+  UPDATE_ELEMENTS,
   EDIT_TITLE,
+  SCRAP,
 } from './types';
 import { getElementKey, isCard, isList } from '../../utils/board';
 
 export interface State {
   isLoading: boolean;
-  status: 'READING' | 'UPDATING' | 'DRAGGED' | 'SCRAPING' | 'NONE';
   data: Board | null;
   error: Error | null;
 }
 
 export const initialState: State = {
   isLoading: false,
-  status: 'NONE',
   data: null,
   error: null,
 };
@@ -78,29 +69,12 @@ export const reducer = createReducer<State, BoardAction>(initialState, {
       error: null,
     };
   },
-  [UPDATE_ELEMENTS_REQUESTED]: (state) => {
-    return {
-      ...state,
-      status: 'UPDATING',
-      isLoading: true,
-      error: null,
-    };
-  },
-  [UPDATE_ELEMENTS_FAILURE]: (state) => {
-    return {
-      ...state,
-      status: 'NONE',
-      isLoading: false,
-      error: new Error('updateElements'),
-    };
-  },
-  [UPDATE_ELEMENTS_SUCCESS]: (state, action) => {
+  [UPDATE_ELEMENTS]: (state, action) => {
     if (state.data && Array.isArray(action.payload)) {
       const key = getElementKey(action.payload[0][0] || action.payload[1][0]);
 
       return {
         ...state,
-        status: 'NONE',
         data: {
           ...state.data,
           [key]: action.payload[1],
@@ -109,60 +83,10 @@ export const reducer = createReducer<State, BoardAction>(initialState, {
     }
     return state;
   },
-  [DRAG_HAPPENED_REQUESTED]: (state) => {
-    return {
-      ...state,
-      status: 'DRAGGED',
-      isLoading: true,
-      error: null,
-    };
-  },
-  [DRAG_HAPPENED_FAILURE]: (state) => {
-    return {
-      ...state,
-      status: 'NONE',
-      isLoading: false,
-      error: new Error('dragHappened'),
-    };
-  },
-  [DRAG_HAPPENED_SUCCESS]: (state, action) => {
-    if (state.data) {
-      const key = getElementKey(action.payload[0]);
-
-      return {
-        isLoading: false,
-        error: null,
-        status: 'NONE',
-        data: {
-          ...state.data,
-          [key]: action.payload,
-        },
-      };
-    }
-    return state;
-  },
-  [SCRAP_REQUESTED]: (state) => {
-    return {
-      ...state,
-      isLoading: true,
-      status: 'SCRAPING',
-      error: null,
-    };
-  },
-  [SCRAP_FAILURE]: (state) => {
-    return {
-      ...state,
-      status: 'NONE',
-      isLoading: false,
-      error: new Error('scrap'),
-    };
-  },
-  [SCRAP_SUCCESS]: (state, action) => {
+  [SCRAP]: (state, action) => {
     if (state.data) {
       return {
-        isLoading: false,
-        error: null,
-        status: 'NONE',
+        ...state,
         data: {
           ...state.data,
           cards: [...state.data.cards, action.payload],
