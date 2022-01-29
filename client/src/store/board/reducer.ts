@@ -24,20 +24,17 @@ export const initialState: State = {
 };
 
 export const reducer = createReducer<State, BoardAction>(initialState, {
-  [READ_BOARD_REQUESTED]: () => {
+  [READ_BOARD_REQUESTED]: (state) => {
     return {
+      ...state,
       isLoading: true,
-      status: 'READING',
-      data: null,
       error: null,
     };
   },
-  [READ_BOARD_FAILURE]: () => {
+  [READ_BOARD_FAILURE]: (state, action) => {
     return {
-      isLoading: false,
-      status: 'NONE',
-      data: null,
-      error: new Error('readBoard'),
+      ...state,
+      error: action.payload,
     };
   },
   [READ_BOARD_SUCCESS]: (_, action) => {
@@ -63,8 +60,7 @@ export const reducer = createReducer<State, BoardAction>(initialState, {
     };
 
     return {
-      data: data,
-      status: 'NONE',
+      data,
       isLoading: false,
       error: null,
     };

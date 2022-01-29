@@ -30,7 +30,7 @@ export function readBoardThunk(
       const res = await readBoard(code);
       dispatch(success(res.Item));
     } catch (err) {
-      dispatch(failure(err, {}));
+      dispatch(failure(new Error(JSON.stringify(err))));
     }
   };
 }

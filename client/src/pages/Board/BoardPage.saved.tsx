@@ -58,6 +58,12 @@ export const BoardPageSaved = ({
     };
   }, [navigate, code, dispatch]);
 
+  React.useEffect(() => {
+    if (error) {
+      navigate('/board', { replace: true });
+    }
+  }, [error, navigate]);
+
   const groupedCardsMap = React.useMemo(
     () =>
       (data &&

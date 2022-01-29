@@ -15,7 +15,7 @@ export const readBoardAsync = createAsyncAction(
   READ_BOARD_REQUESTED,
   READ_BOARD_SUCCESS,
   READ_BOARD_FAILURE
-)<undefined, InitialBoard>();
+)<undefined, InitialBoard, Error>();
 
 export const updateElements = createStandardAction(UPDATE_ELEMENTS)<
   string | Element[][]
