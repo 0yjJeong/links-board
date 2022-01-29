@@ -17,7 +17,7 @@ import {
   List,
 } from '../../types';
 
-export interface BoardPageSavedProps extends State {
+export interface BoardPageSavedProps extends Omit<State, 'message'> {
   editTitle: (payload: TitleProps) => void;
 }
 

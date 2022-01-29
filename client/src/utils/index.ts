@@ -19,3 +19,10 @@ export const limitTextLength = (text: string, max: number) => {
     throw err;
   }
 };
+
+export const timeout = (ms: number, callback: () => void) => {
+  const timer = setTimeout(() => {
+    callback();
+    clearTimeout(timer);
+  }, ms);
+};

@@ -7,6 +7,7 @@ import {
   UPDATE_ELEMENTS,
   EDIT_TITLE,
   SCRAP,
+  SET_MESSAGE,
 } from './types';
 
 const { createStandardAction } = deprecated;
@@ -24,3 +25,5 @@ export const updateElements = createStandardAction(UPDATE_ELEMENTS)<
 export const editTitle = createStandardAction(EDIT_TITLE)<TitleProps>();
 
 export const scrap = createStandardAction(SCRAP)<Card>();
+
+export const setMessage = createStandardAction(SET_MESSAGE)<string>();

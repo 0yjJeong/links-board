@@ -3,20 +3,24 @@ import { NavigateFunction } from 'react-router-dom';
 import short from 'short-uuid';
 import { RootState } from '..';
 import { createBoard, readBoard, scrapUrl, updateBoard } from '../../lib/api';
-import { readBoardAsync, scrap, updateElements } from './actions';
+import { readBoardAsync, scrap, setMessage, updateElements } from './actions';
 import { BoardAction } from './types';
 import { Element, InitialBoard } from '../../types';
+import { timeout } from '../../utils';
 
 export function createBoardThunk(
   body: InitialBoard,
   navigate: NavigateFunction
 ): ThunkAction<void, RootState, null, BoardAction> {
-  return async () => {
+  return async (dispatch) => {
     try {
       await createBoard(body);
       localStorage.setItem('board', JSON.stringify(body));
       navigate(`/board/${body.id}`, { replace: true });
-    } catch (err) {}
+    } catch (err) {
+      dispatch(setMessage('Failed to save board'));
+      timeout(2000, () => dispatch(setMessage('')));
+    }
   };
 }
 
@@ -48,7 +52,10 @@ export function updateBoardThunk(
         dispatch(updateElements(body));
         await updateBoard(code, { title: body });
       }
-    } catch (err) {}
+    } catch (err) {
+      dispatch(setMessage('Failed to update board'));
+      timeout(2000, () => dispatch(setMessage('')));
+    }
   };
 }
 
@@ -72,8 +79,10 @@ export function scrapThunk(
       };
 
       dispatch(scrap(card));
-
       setLoading(false);
-    } catch (err) {}
+    } catch (err) {
+      dispatch(setMessage('Failed to scrap'));
+      timeout(2000, () => dispatch(setMessage('')));
+    }
   };
 }

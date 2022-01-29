@@ -12,3 +12,5 @@ export const UPDATE_ELEMENTS = 'board/UPDATE_ELEMENTS';
 export const SCRAP = 'board/SCRAP';
 
 export const EDIT_TITLE = 'board/EDIT_TITLE';
+
+export const SET_MESSAGE = 'board/SET_MESSAGE';
