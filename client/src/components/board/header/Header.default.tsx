@@ -24,12 +24,11 @@ export const BoardHeaderDefault = ({
   onEditTitle,
 }: HeaderDefaultProps) => {
   const navigate = useNavigate();
-
   const titleProps: React.InputHTMLAttributes<HTMLInputElement> = React.useMemo(
     () =>
       title !== null && onEditTitle
         ? {
-            title,
+            value: title,
             onChange: (e) => onEditTitle(e.target.value),
           }
         : {},
