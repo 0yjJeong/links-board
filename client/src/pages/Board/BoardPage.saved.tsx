@@ -1,7 +1,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { readBoardThunk, updateBoardThunk } from '../../store/board/thunks';
+import {
+  deleteBoardThunk,
+  readBoardThunk,
+  updateBoardThunk,
+} from '../../store/board/thunks';
 import { readBoardAsync } from '../../store/board/actions';
 import { State } from '../../store/board/reducer';
 import { getElementKey, updateLists, updateCards } from '../../utils/board';
@@ -176,8 +180,9 @@ export const BoardPageSaved = ({
   return (
     <Base>
       <BoardHeader
+        code={code}
         title={data.title}
-        onDeleteBoard={() => {}}
+        onDeleteBoard={() => dispatch(deleteBoardThunk(code, navigate))}
         onInputBlurred={onInputBlurred}
         onEditTitle={onEditTitle}
       />

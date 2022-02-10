@@ -39,6 +39,7 @@ export const BoardPageNew = () => {
   return (
     <Base>
       <BoardHeader
+        code={undefined}
         title={null}
         onDeleteBoard={() => {}}
         onInputBlurred={onInputBlurred}

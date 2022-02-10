@@ -2,7 +2,13 @@ import { ThunkAction } from 'redux-thunk';
 import { NavigateFunction } from 'react-router-dom';
 import short from 'short-uuid';
 import { RootState } from '..';
-import { createBoard, readBoard, scrapUrl, updateBoard } from '../../lib/api';
+import {
+  createBoard,
+  deleteBoard,
+  readBoard,
+  scrapUrl,
+  updateBoard,
+} from '../../lib/api';
 import { readBoardAsync, scrap, setMessage, updateElements } from './actions';
 import { BoardAction } from './types';
 import { Element, InitialBoard } from '../../types';
@@ -20,6 +26,22 @@ export function createBoardThunk(
     } catch (err) {
       dispatch(setMessage('Failed to save board'));
       timeout(2000, () => dispatch(setMessage('')));
+    }
+  };
+}
+
+export function deleteBoardThunk(
+  id: string | undefined,
+  navigate: NavigateFunction
+): ThunkAction<void, RootState, null, BoardAction> {
+  return async (dispatch) => {
+    if (id) {
+      try {
+        await deleteBoard(id);
+        navigate('/', { replace: true });
+      } catch (err) {
+        dispatch(setMessage('Failed to delete board'));
+      }
     }
   };
 }

@@ -11,6 +11,7 @@ const Header = styled(Stack)`
 `;
 
 interface HeaderDefaultProps {
+  code: string | undefined;
   title: string | null;
   onInputBlurred: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteBoard?: () => void;
@@ -18,6 +19,7 @@ interface HeaderDefaultProps {
 }
 
 export const BoardHeaderDefault = ({
+  code,
   title,
   onDeleteBoard,
   onInputBlurred,
@@ -50,10 +52,12 @@ export const BoardHeaderDefault = ({
             <HiOutlineDocumentAdd />
             New
           </Button>
-          <Button onClick={onDeleteBoard}>
-            <MdDelete />
-            Delete
-          </Button>
+          {code && (
+            <Button onClick={onDeleteBoard}>
+              <MdDelete />
+              Delete
+            </Button>
+          )}
         </Stack>
       </Stack>
       <Stack>
