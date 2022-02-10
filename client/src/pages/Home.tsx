@@ -4,7 +4,7 @@ import { Button, Text } from '../components';
 export const HomePage = () => {
   return (
     <div className='Home'>
-      <div className='Home__header'>
+      <div>
         <Text font='slogan' color='grey5' justify='center'>
           🗂
         </Text>
@@ -15,7 +15,7 @@ export const HomePage = () => {
           With the links board, it's easier to manage the list of links.
         </Text>
       </div>
-      <div>
+      <div className='Home__body'>
         <video src='example.mov' autoPlay muted loop />
         <div className='Home__body-bottom'>
           <p>Do you want to create a new board?</p>

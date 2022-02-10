@@ -21,8 +21,8 @@
   max-width: 900px;
 }
 
-.Home__header {
-  margin-bottom: 1rem;
+.Home__body {
+  padding: 10px 10px 0 10px;
 }
 
 .Home__body-bottom {

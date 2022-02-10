@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
-import { IoIosArrowBack } from 'react-icons/io';
+import { AiFillHome } from 'react-icons/ai';
 import { MdDelete } from 'react-icons/md';
 import { Stack, Input, Button } from '../../';
 import React from 'react';
@@ -41,7 +41,7 @@ export const BoardHeaderDefault = ({
         <Stack>
           <Link to='/' style={{ textDecoration: 'none' }}>
             <Button series='tertiary'>
-              <IoIosArrowBack />
+              <AiFillHome />
             </Button>
           </Link>
         </Stack>
