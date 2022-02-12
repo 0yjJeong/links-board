@@ -1,17 +1,13 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  deleteBoardThunk,
-  readBoardThunk,
-  updateBoardThunk,
-} from '../../store/board/thunks';
-import { readBoardAsync } from '../../store/board/actions';
+import { readBoardAsync, updateElements } from '../../store/board/actions';
 import { State } from '../../store/board/reducer';
 import { getElementKey, updateLists, updateCards } from '../../utils/board';
 import { Base, Canvas, Column } from '../../components';
 import { BoardHeaderDefault as BoardHeader } from '../../components/board/header/Header.default';
 import { safe } from '../../utils';
+import { deleteBoard, readBoard, updateBoard } from '../../lib/api';
 import {
   InitialBoard,
   TitleProps,
@@ -20,6 +16,7 @@ import {
   Card,
   List,
 } from '../../types';
+import useRequest from '../../hooks/useRequest';
 
 export interface BoardPageSavedProps extends Omit<State, 'message'> {
   editTitle: (payload: TitleProps) => void;
@@ -28,23 +25,33 @@ export interface BoardPageSavedProps extends Omit<State, 'message'> {
 export const BoardPageSaved = ({
   data,
   isLoading,
-  error,
   editTitle,
 }: BoardPageSavedProps) => {
   const { code } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { request } = useRequest();
 
   React.useEffect(() => {
-    const { success: setBoard } = readBoardAsync;
+    const { request: requestReadBoard, success: successReadBoard } =
+      readBoardAsync;
 
     const init = async () => {
       if (code) {
         const board = localStorage.getItem('board');
         if (!board) {
-          dispatch(readBoardThunk(code));
+          request({
+            callback: () => readBoard(code),
+            request: () => requestReadBoard(),
+          })
+            .then(({ dispatch, response }) => {
+              dispatch(successReadBoard(response.Item));
+            })
+            .catch(() => {
+              navigate('/board', { replace: true });
+            });
         } else {
-          dispatch(setBoard(JSON.parse(board) as InitialBoard));
+          dispatch(successReadBoard(JSON.parse(board) as InitialBoard));
           localStorage.removeItem('board');
         }
       }
@@ -53,7 +60,7 @@ export const BoardPageSaved = ({
 
     return () => {
       dispatch(
-        setBoard({
+        successReadBoard({
           id: '',
           title: '',
           elements: [],
@@ -61,12 +68,6 @@ export const BoardPageSaved = ({
       );
     };
   }, [navigate, code, dispatch]);
-
-  React.useEffect(() => {
-    if (error) {
-      navigate('/board', { replace: true });
-    }
-  }, [error, navigate]);
 
   const groupedCardsMap = React.useMemo(
     () =>
@@ -96,11 +97,15 @@ export const BoardPageSaved = ({
 
           const nextElements = [...arr[0], element];
 
-          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
+          request({
+            callback: () =>
+              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
+            request: () => updateElements([arr[0], nextElements]),
+          });
         }
       }
     },
-    [code, data, dispatch]
+    [code, data, request]
   );
 
   const onDeleteElement = React.useCallback(
@@ -121,11 +126,15 @@ export const BoardPageSaved = ({
             ...arr[0].slice(index + 1),
           ];
 
-          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
+          request({
+            callback: () =>
+              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
+            request: () => updateElements([arr[0], nextElements]),
+          });
         }
       }
     },
-    [code, data, dispatch]
+    [code, data, request]
   );
 
   const onInputBlurred = React.useCallback(
@@ -133,14 +142,21 @@ export const BoardPageSaved = ({
       if (code) {
         if (data) {
           if (event.target.name === 'title') {
-            dispatch(updateBoardThunk(code, event.target.value));
+            request({
+              callback: () => updateBoard(code, { title: event.target.value }),
+            });
           } else {
-            dispatch(updateBoardThunk(code, [[], data.lists, data.cards]));
+            request({
+              callback: () =>
+                updateBoard(code, {
+                  elements: [...data.lists, ...data.cards],
+                }),
+            });
           }
         }
       }
     },
-    [code, data, dispatch]
+    [code, data, request]
   );
 
   const onDragHappened = React.useCallback(
@@ -159,12 +175,27 @@ export const BoardPageSaved = ({
           } else if (type === 'card') {
             nextElements = updateCards(data.cards, elementId, endId, endIndex);
           }
-          dispatch(updateBoardThunk(code, [arr[0], nextElements, arr[1]]));
+
+          request({
+            callback: () =>
+              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
+            request: () => updateElements([arr[0], nextElements]),
+          });
         }
       }
     },
-    [code, data, dispatch]
+    [code, data, request]
   );
+
+  const onDeleteBoard = React.useCallback(() => {
+    if (code) {
+      request({
+        callback: () => deleteBoard(code),
+      }).then(() => {
+        navigate('/', { replace: true });
+      });
+    }
+  }, [code, navigate, request]);
 
   const onEditTitle = React.useCallback(
     (title: string, id?: string) => {
@@ -173,7 +204,7 @@ export const BoardPageSaved = ({
     [editTitle]
   );
 
-  if (isLoading || !data) {
+  if (!(!isLoading && data && code)) {
     return null;
   }
 
@@ -182,7 +213,7 @@ export const BoardPageSaved = ({
       <BoardHeader
         code={code}
         title={data.title}
-        onDeleteBoard={() => dispatch(deleteBoardThunk(code, navigate))}
+        onDeleteBoard={onDeleteBoard}
         onInputBlurred={onInputBlurred}
         onEditTitle={onEditTitle}
       />
@@ -195,6 +226,7 @@ export const BoardPageSaved = ({
               list={list}
               isLoading={isLoading}
               cards={safe(() => groupedCardsMap[list.id], [])}
+              code={code}
               onEditTitle={onEditTitle}
               onDeleteElement={onDeleteElement}
               onAddElement={onAddElement}

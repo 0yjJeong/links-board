@@ -21,6 +21,7 @@ export interface ColumnDefaultProps {
   list: List;
   cards: Card[];
   isLoading: boolean;
+  code: string;
   onEditTitle: (title: string, id?: string) => void;
   onDeleteElement: (payload: Element) => void;
   onAddElement: (payload: Element) => void;
@@ -32,6 +33,7 @@ const ColumnDefault = ({
   list,
   cards,
   isLoading,
+  code,
   onEditTitle,
   onDeleteElement,
   onAddElement,
@@ -43,6 +45,7 @@ const ColumnDefault = ({
       list={list}
       cards={cards}
       isLoading={isLoading}
+      code={code}
       onEditTitle={onEditTitle}
       onDeleteElement={onDeleteElement}
       onAddElement={onAddElement}

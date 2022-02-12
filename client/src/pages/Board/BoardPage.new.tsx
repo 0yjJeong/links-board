@@ -1,14 +1,33 @@
 import React from 'react';
+import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import short from 'short-uuid';
-import { createBoardThunk } from '../../store/board/thunks';
+import { baseThunk } from '../../store/board/thunks';
 import { Base, Canvas } from '../../components';
 import { BoardHeaderDefault as BoardHeader } from '../../components/board/header/Header.default';
+import { createBoard } from '../../lib/api';
+import { InitialBoard } from '../../types';
 
 export const BoardPageNew = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const createBoardRequest = React.useCallback(
+    (body: InitialBoard) => {
+      return (
+        dispatch(
+          baseThunk({
+            callback: () => createBoard(body),
+          })
+        ) as unknown as Promise<{ dispatch: Dispatch; response: any }>
+      ).then(() => {
+        localStorage.setItem('board', JSON.stringify(body));
+        navigate(`/board/${body.id}`, { replace: true });
+      });
+    },
+    [dispatch, navigate]
+  );
 
   const onAddElement = React.useCallback(() => {
     const body = {
@@ -21,8 +40,8 @@ export const BoardPageNew = () => {
         },
       ],
     };
-    dispatch(createBoardThunk(body, navigate));
-  }, [dispatch, navigate]);
+    createBoardRequest(body);
+  }, [createBoardRequest]);
 
   const onInputBlurred = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,9 +50,9 @@ export const BoardPageNew = () => {
         title: event.target.value,
         elements: [],
       };
-      dispatch(createBoardThunk(body, navigate));
+      createBoardRequest(body);
     },
-    [dispatch, navigate]
+    [createBoardRequest]
   );
 
   return (

@@ -1,15 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdAdd } from 'react-icons/io';
 import { DotLoader } from 'react-spinners';
-import { useParams } from 'react-router';
 import { Card, Stack, Input, Button, ButtonStretch } from '../..';
 import { ColumnDefaultProps } from '../column/Column.default';
 import theme from '../../../constants/theme';
-import { useDispatch } from 'react-redux';
-import { scrapThunk } from '../../../store/board/thunks';
+import useScrap from '../../../hooks/useScrap';
 
 export interface ColumnInnerDefaultProps extends ColumnDefaultProps {}
 
@@ -21,57 +19,24 @@ const Body = styled.div`
 `;
 
 const ColumnInnerDefault = ({
+  code,
   list,
   cards = [],
   onEditTitle,
   onDeleteElement,
   onInputBlurred,
 }: ColumnInnerDefaultProps) => {
-  const { code } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useDispatch();
-  const [adding, setAdding] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { typing, scraping, onBlur, onScrap, onReset } = useScrap();
 
   useEffect(() => {
-    if (adding) {
+    if (typing) {
       if (inputRef.current) {
         inputRef.current.focus();
-        inputRef.current.addEventListener('blur', (e) => {
-          let element;
-          if (e.relatedTarget) {
-            (e.relatedTarget as HTMLElement).childNodes.forEach((child) => {
-              if (child.textContent === 'ADD') {
-                element = child;
-              }
-            });
-          }
-
-          if (!element) {
-            setAdding(false);
-          }
-        });
+        inputRef.current.addEventListener('blur', onBlur);
       }
     }
-  }, [adding]);
-
-  const handleScrap = async () => {
-    if (code) {
-      if (inputRef.current) {
-        const url = inputRef.current.value;
-
-        dispatch(scrapThunk(code, list.id, url, setLoading));
-      }
-    }
-  };
-
-  const handleDeleteColumn = () => {
-    onDeleteElement(list);
-  };
-
-  const handleEditTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onEditTitle(e.target.value, list.id);
-  };
+  }, [typing, onBlur]);
 
   return (
     <>
@@ -82,11 +47,11 @@ const ColumnInnerDefault = ({
           font='title2'
           placeholder='List title'
           value={list.title}
-          onChange={handleEditTitle}
+          onChange={(e) => onEditTitle(e.target.value, list.id)}
           onBlur={onInputBlurred}
         />
         <Button>
-          <HiMinus onClick={handleDeleteColumn} />
+          <HiMinus onClick={() => onDeleteElement(list)} />
         </Button>
       </Stack>
       <Droppable droppableId={list.id} type='card'>
@@ -105,9 +70,9 @@ const ColumnInnerDefault = ({
         )}
       </Droppable>
       <Stack spacing='normal' justify='center'>
-        {loading ? (
+        {scraping ? (
           <DotLoader color={theme.palette.grey3} size={18} />
-        ) : adding ? (
+        ) : typing ? (
           <div style={{ background: '#fff', width: '100%' }}>
             <Stack align='center'>
               <Input
@@ -120,14 +85,14 @@ const ColumnInnerDefault = ({
               <Button
                 series='tertiary'
                 style={{ fontSize: '0.4rem', marginRight: '4px' }}
-                onClick={handleScrap}
+                onClick={() => onScrap(code, list.id, inputRef.current?.value)}
               >
                 ADD
               </Button>
             </Stack>
           </div>
         ) : (
-          <ButtonStretch onClick={() => setAdding(true)}>
+          <ButtonStretch onClick={onReset}>
             <IoMdAdd />
             <span>ADD LINK</span>
           </ButtonStretch>
