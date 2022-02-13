@@ -31,7 +31,7 @@ export function baseThunk({
       return Promise.resolve({ dispatch, response });
     } catch (err) {
       failure && dispatch(failure());
-      return Promise.reject();
+      return Promise.reject(err);
     }
   };
 }
