@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Stack, ToastDefault } from '..';
+import { Stack, Toast } from '..';
 import { RootState } from '../../store';
 
 const BaseDefault = styled(Stack)`
@@ -9,11 +9,12 @@ const BaseDefault = styled(Stack)`
 `;
 
 const BaseWrapper: FC = ({ children }) => {
-  const message = useSelector((state: RootState) => state.board.message);
+  const message = useSelector((state: RootState) => state.base.message);
+  const error = useSelector((state: RootState) => state.base.error);
 
   return (
     <BaseDefault axis='column' gap='medium'>
-      {message && <ToastDefault>{message}</ToastDefault>}
+      <Toast message={message} error={error} />
       {children}
     </BaseDefault>
   );
