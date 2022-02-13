@@ -1,43 +1,41 @@
-import React, { useRef, useEffect } from 'react';
-import { IoIosClose } from 'react-icons/io';
-import { Button } from '..';
-import { ToastDefault } from '../..';
+import React from 'react';
+import { HiCheck } from 'react-icons/hi';
+import { RiCloseCircleFill } from 'react-icons/ri';
+import { useDispatch } from 'react-redux';
+import { CSSProperties } from 'styled-components';
+import { reset } from '../../../store/base';
+import { timeout } from '../../../utils';
+import { ToastDefault } from './Toast.default';
 
 interface ToastWrapperProps {
-  text: string;
-  millisecond: number;
-  onTimeout: () => void;
+  message: string;
+  error: Error | null;
 }
 
-const ToastWrapper = ({ millisecond, text, onTimeout }: ToastWrapperProps) => {
-  let timer = useRef<NodeJS.Timeout>();
+const ToastWrapper = ({ message, error }: ToastWrapperProps) => {
+  const dispatch = useDispatch();
 
-  const handleTimeout = React.useCallback(() => {
-    if (timer.current) {
-      clearInterval(timer.current);
-      timer.current = undefined;
-      onTimeout();
+  React.useEffect(() => {
+    if (message) {
+      timeout(2000, () => dispatch(reset()));
     }
-  }, [onTimeout]);
+  }, [message, dispatch]);
 
-  useEffect(() => {
-    if (typeof timer.current === 'undefined') {
-      if (text) {
-        if (millisecond) {
-          timer.current = setTimeout(handleTimeout, millisecond);
-        }
-      }
-    }
-  }, [text, millisecond, handleTimeout]);
+  const Icon = error ? RiCloseCircleFill : HiCheck;
 
-  if (!text) return null;
+  const iconStyles = React.useMemo<CSSProperties>(
+    () => ({
+      color: error ? '#ff3912' : '#00b530',
+    }),
+    [error]
+  );
+
+  if (!message) return null;
 
   return (
-    <ToastDefault>
-      {text}
-      <Button series='tertiary' onClick={handleTimeout}>
-        <IoIosClose />
-      </Button>
+    <ToastDefault color={iconStyles.color!}>
+      <Icon style={iconStyles} />
+      <div>{message}</div>
     </ToastDefault>
   );
 };

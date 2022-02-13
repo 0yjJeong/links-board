@@ -1,22 +1,37 @@
 import styled from 'styled-components';
 
-export const ToastDefault = styled.div`
-  position: fixed;
+interface ToastDefaultProps {
+  color: string;
+}
+
+export const ToastDefault = styled.div<ToastDefaultProps>`
+  overflow: hidden;
+  position: absolute;
   left: 50%;
-  top: ${(p) => p.theme.spacing['medium']}px;
-  max-width: 260px;
-  min-width: 260px;
   transform: translateX(-50%);
-  font-size: ${(p) => p.theme.font['body2'].size}px;
-  background: ${(p) => p.theme.palette['grey5']};
-  color: ${(p) => p.theme.palette['grey0']};
-  padding-top: ${(p) => p.theme.spacing['normal']}px;
-  padding-bottom: ${(p) => p.theme.spacing['normal']}px;
-  padding-left: ${(p) => p.theme.spacing['normal']}px;
-  padding-right: ${(p) => p.theme.spacing['normal']}px;
-  border-radius: ${(p) => p.theme.radii['small']}px;
+  border-radius: 5px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 100;
+  gap: ${(p) => p.theme.spacing['normal']}px;
+  width: calc(100% - ${(p) => p.theme.spacing['medium'] * 4}px);
+  background: ${(p) => p.theme.palette['grey5']};
+  color: #fff;
+  top: ${(p) => p.theme.spacing['medium']}px;
+  padding: ${(p) => p.theme.spacing['medium']}px;
+
+  > * {
+    &:first-child {
+      margin-left: 10px;
+    }
+  }
+
+  &:before {
+    display: block;
+    content: '';
+    width: 10px;
+    background: ${(p) => p.color};
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
 `;
