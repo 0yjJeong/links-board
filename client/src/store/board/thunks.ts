@@ -11,7 +11,8 @@ export type BaseThunkParams = {
 
 export type BaseThunkReturnType = Promise<{
   dispatch: Dispatch;
-  response: any;
+  response?: any;
+  error?: any;
 }>;
 
 export function baseThunk({
@@ -29,9 +30,9 @@ export function baseThunk({
     try {
       const response = await callback();
       return Promise.resolve({ dispatch, response });
-    } catch (err) {
+    } catch (error) {
       failure && dispatch(failure());
-      return Promise.reject(err);
+      return Promise.reject({ dispatch, error });
     }
   };
 }

@@ -27,7 +27,7 @@ const ColumnInnerDefault = ({
   onInputBlurred,
 }: ColumnInnerDefaultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { typing, scraping, onBlur, onScrap, onReset } = useScrap();
+  const { typing, scraping, onBlur, onScrap, setTyping } = useScrap();
 
   useEffect(() => {
     if (typing) {
@@ -92,7 +92,7 @@ const ColumnInnerDefault = ({
             </Stack>
           </div>
         ) : (
-          <ButtonStretch onClick={onReset}>
+          <ButtonStretch onClick={() => setTyping(true)}>
             <IoMdAdd />
             <span>ADD LINK</span>
           </ButtonStretch>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import short from 'short-uuid';
 import { scrapUrl } from '../lib/api';
+import { setMessage, setError } from '../store/base';
 import { scrap } from '../store/board/actions';
 import useRequest from './useRequest';
 
@@ -38,20 +39,21 @@ export default function useScrap() {
 
       request({
         callback: () => scrapUrl(code, card),
-      }).then(({ dispatch, response }) => {
-        dispatch(
-          scrap({
-            ...card,
-            data: response,
-          })
-        );
-        setScraping(false);
-      });
+      })
+        .then(({ dispatch, response }) => {
+          dispatch(
+            scrap({
+              ...card,
+              data: response,
+            })
+          );
+          setScraping(false);
+        })
+        .catch(({ dispatch, error }) => {
+          dispatch(setMessage(`Failed to scrap ${url}`));
+          dispatch(setError(error));
+        });
     }
-  };
-
-  const onReset = () => {
-    setTyping(false);
   };
 
   return {
@@ -59,6 +61,6 @@ export default function useScrap() {
     scraping,
     onBlur,
     onScrap,
-    onReset,
+    setTyping,
   };
 }
