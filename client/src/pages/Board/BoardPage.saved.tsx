@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { readBoardAsync, updateElements } from '../../store/board/actions';
-import { State } from '../../store/board/reducer';
+import { BoardState } from '../../store/board/reducer';
 import { getElementKey, updateLists, updateCards } from '../../utils/board';
 import { Base, Canvas, Column } from '../../components';
 import { BoardHeaderDefault as BoardHeader } from '../../components/board/header/Header.default';
@@ -17,8 +17,9 @@ import {
   List,
 } from '../../types';
 import useRequest from '../../hooks/useRequest';
+import { setError, setMessage } from '../../store/base';
 
-export interface BoardPageSavedProps extends Omit<State, 'message'> {
+export interface BoardPageSavedProps extends Omit<BoardState, 'message'> {
   editTitle: (payload: TitleProps) => void;
 }
 
@@ -47,10 +48,13 @@ export const BoardPageSaved = ({
             .then(({ dispatch, response }) => {
               dispatch(successReadBoard(response.Item));
             })
-            .catch(() => {
+            .catch(({ dispatch, error }) => {
+              dispatch(setMessage(`There is no board with id ${code}`));
+              dispatch(setError(error));
               navigate('/board', { replace: true });
             });
         } else {
+          dispatch(setMessage('Success to create new board ヾ(＾∇＾)'));
           dispatch(successReadBoard(JSON.parse(board) as InitialBoard));
           localStorage.removeItem('board');
         }
@@ -90,17 +94,22 @@ export const BoardPageSaved = ({
         if (data) {
           const key = getElementKey(element);
 
-          const arr =
+          const elementList =
             key === 'lists'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
 
-          const nextElements = [...arr[0], element];
+          const nextElements = [...elementList[0], element];
 
           request({
             callback: () =>
-              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
-            request: () => updateElements([arr[0], nextElements]),
+              updateBoard(code, {
+                elements: [...nextElements, ...elementList[1]],
+              }),
+            request: () => updateElements([elementList[0], nextElements]),
+          }).catch(({ dispatch, error }) => {
+            dispatch(setMessage('Failed to add element'));
+            dispatch(setError(error));
           });
         }
       }
@@ -114,22 +123,29 @@ export const BoardPageSaved = ({
         if (data) {
           const key = getElementKey(element);
 
-          const arr =
+          const elementList =
             key === 'lists'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
 
-          const index = arr[0].findIndex((el) => el.id === element.id);
+          const index = elementList[0].findIndex(
+            (list) => list.id === element.id
+          );
 
           const nextElements = [
-            ...arr[0].slice(0, index),
-            ...arr[0].slice(index + 1),
+            ...elementList[0].slice(0, index),
+            ...elementList[0].slice(index + 1),
           ];
 
           request({
             callback: () =>
-              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
-            request: () => updateElements([arr[0], nextElements]),
+              updateBoard(code, {
+                elements: [...nextElements, ...elementList[1]],
+              }),
+            request: () => updateElements([elementList[0], nextElements]),
+          }).catch(({ dispatch, error }) => {
+            dispatch(setMessage('Failed to remove element'));
+            dispatch(setError(error));
           });
         }
       }
@@ -144,12 +160,18 @@ export const BoardPageSaved = ({
           if (event.target.name === 'title') {
             request({
               callback: () => updateBoard(code, { title: event.target.value }),
+            }).catch(({ dispatch, error }) => {
+              dispatch(setMessage('Failed to change title'));
+              dispatch(setError(error));
             });
           } else {
             request({
               callback: () =>
                 updateBoard(code, {
                   elements: [...data.lists, ...data.cards],
+                }).catch(({ dispatch, error }) => {
+                  dispatch(setMessage('Failed to change title of list'));
+                  dispatch(setError(error));
                 }),
             });
           }
@@ -165,11 +187,13 @@ export const BoardPageSaved = ({
         if (data) {
           const { type, elementId, startIndex, endId, endIndex } = dragged;
 
-          const arr =
+          const elementList =
             type === 'list'
               ? [data.lists, data.cards]
               : [data.cards, data.lists];
+
           let nextElements: List[] | Card[] = [];
+
           if (type === 'list') {
             nextElements = updateLists(data.lists, startIndex, endIndex);
           } else if (type === 'card') {
@@ -178,8 +202,13 @@ export const BoardPageSaved = ({
 
           request({
             callback: () =>
-              updateBoard(code, { elements: [...nextElements, ...arr[1]] }),
-            request: () => updateElements([arr[0], nextElements]),
+              updateBoard(code, {
+                elements: [...nextElements, ...elementList[1]],
+              }),
+            request: () => updateElements([elementList[0], nextElements]),
+          }).catch(({ dispatch, error }) => {
+            dispatch(setMessage('Failed to update board'));
+            dispatch(setError(error));
           });
         }
       }
@@ -191,9 +220,14 @@ export const BoardPageSaved = ({
     if (code) {
       request({
         callback: () => deleteBoard(code),
-      }).then(() => {
-        navigate('/', { replace: true });
-      });
+      })
+        .then(() => {
+          navigate('/', { replace: true });
+        })
+        .catch(({ dispatch, error }) => {
+          dispatch(setMessage('Failed to delete board'));
+          dispatch(setError(error));
+        });
     }
   }, [code, navigate, request]);
 

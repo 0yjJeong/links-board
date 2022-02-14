@@ -8,37 +8,28 @@ import {
   UPDATE_ELEMENTS,
   EDIT_TITLE,
   SCRAP,
-  SET_MESSAGE,
 } from './types';
 import { getElementKey, isCard, isList } from '../../utils/board';
 
-export interface State {
+export interface BoardState {
   isLoading: boolean;
   data: Board | null;
-  error: Error | null;
-  message: string;
 }
 
-export const initialState: State = {
+export const initialState: BoardState = {
   isLoading: false,
   data: null,
-  error: null,
-  message: '',
 };
 
-export const reducer = createReducer<State, BoardAction>(initialState, {
+export const reducer = createReducer<BoardState, BoardAction>(initialState, {
   [READ_BOARD_REQUESTED]: (state) => {
     return {
       ...state,
       isLoading: true,
-      error: null,
     };
   },
-  [READ_BOARD_FAILURE]: (state, action) => {
-    return {
-      ...state,
-      error: action.payload,
-    };
+  [READ_BOARD_FAILURE]: (state) => {
+    return state;
   },
   [READ_BOARD_SUCCESS]: (_, action) => {
     const elements = action.payload.elements;
@@ -65,8 +56,6 @@ export const reducer = createReducer<State, BoardAction>(initialState, {
     return {
       data,
       isLoading: false,
-      error: null,
-      message: '',
     };
   },
   [UPDATE_ELEMENTS]: (state, action) => {
@@ -122,11 +111,5 @@ export const reducer = createReducer<State, BoardAction>(initialState, {
       };
     }
     return state;
-  },
-  [SET_MESSAGE]: (state, action) => {
-    return {
-      ...state,
-      message: action.payload,
-    };
   },
 });

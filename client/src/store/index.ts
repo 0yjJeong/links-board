@@ -3,8 +3,8 @@ import * as board from './board/reducer';
 import * as base from './base';
 
 export type RootState = {
-  board: board.State;
-  base: base.State;
+  board: board.BoardState;
+  base: base.CoreState;
 };
 
 const rootReducer = combineReducers({

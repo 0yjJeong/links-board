@@ -52,6 +52,8 @@ export default function useScrap() {
         .catch(({ dispatch, error }) => {
           dispatch(setMessage(`Failed to scrap ${url}`));
           dispatch(setError(error));
+          setScraping(false);
+          setTyping(false);
         });
     }
   };

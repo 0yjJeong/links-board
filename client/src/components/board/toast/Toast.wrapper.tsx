@@ -17,7 +17,7 @@ const ToastWrapper = ({ message, error }: ToastWrapperProps) => {
 
   React.useEffect(() => {
     if (message) {
-      timeout(2000, () => dispatch(reset()));
+      timeout(3000, () => dispatch(reset()));
     }
   }, [message, dispatch]);
 

@@ -1,5 +1,3 @@
-import { State } from '../store/board/reducer';
-
 export type Element = List | Card;
 
 export type Elements = Array<Element>;
